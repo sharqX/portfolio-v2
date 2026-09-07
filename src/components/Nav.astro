@@ -1,0 +1,197 @@
+---
+import { Icon } from "astro-icon/components";
+import { site } from "../site.config";
+
+const path = Astro.url.pathname;
+const onBlog = path.startsWith("/blog");
+---
+
+<header class="nav">
+  <div class="nav__inner container">
+    <a
+      class="nav__brand link-plain"
+      href="/"
+      aria-label={`${site.name} — home`}
+    >
+      <span class="nav__monogram">{site.monogram}</span>
+      <span class="nav__name">{site.shortName}</span>
+    </a>
+
+    <nav class="nav__links" aria-label="Primary">
+      {
+        site.nav.map((item) => (
+          <a class="nav__link link-plain" href={item.href}>
+            {item.label}
+          </a>
+        ))
+      }
+      <a
+        class="nav__link nav__link--always link-plain"
+        href="/blog"
+        aria-current={onBlog ? "page" : undefined}
+      >
+        Blog
+      </a>
+      <button
+        class="nav__icon nav__icon--button"
+        type="button"
+        data-theme-toggle
+        hidden
+        aria-label="Switch theme"
+        title="Switch theme"
+      >
+        <Icon
+          aria-hidden="true"
+          class="theme-icon theme-icon--moon"
+          name="ph:moon-bold"
+          width="16"
+          height="16"
+        />
+        <Icon
+          aria-hidden="true"
+          class="theme-icon theme-icon--sun"
+          name="ph:sun-bold"
+          width="16"
+          height="16"
+        />
+      </button>
+
+      <a
+        class="nav__icon link-plain"
+        href={site.resumeUrl}
+        rel="noopener noreferrer"
+        target="_blank"
+        aria-label="Download résumé"
+        title="Download résumé"
+      >
+        <Icon
+          aria-hidden="true"
+          name="ph:download-simple-bold"
+          width="16"
+          height="16"
+        />
+      </a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--canvas) 80%, transparent);
+    backdrop-filter: blur(12px) saturate(1.4);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav__inner {
+    height: var(--nav-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .nav__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .nav__monogram {
+    display: grid;
+    place-items: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-key);
+    background: var(--surface);
+    font-family: var(--font-mono);
+    font-size: var(--text-micro);
+    letter-spacing: 0.03em;
+  }
+
+  .nav__name {
+    font-size: var(--text-small);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .nav__links {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .nav__link {
+    padding: 0.45rem 0.7rem;
+    border-radius: var(--radius-button);
+    font-size: var(--text-small);
+    color: var(--ink-muted);
+    transition:
+      color var(--dur-hover) ease,
+      background-color var(--dur-hover) ease;
+  }
+
+  .nav__link:hover,
+  .nav__link[aria-current="page"] {
+    color: var(--ink);
+    background: var(--surface-key);
+  }
+
+  .nav__icon {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    margin-inline-start: 0.4rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-button);
+    background: var(--surface);
+    color: var(--ink);
+    transition:
+      background-color var(--dur-hover) ease,
+      transform var(--dur-hover) ease;
+  }
+
+  .nav__icon:hover {
+    background: var(--surface-key);
+  }
+
+  .nav__icon--button {
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .nav__icon--button:active {
+    transform: scale(0.98);
+  }
+
+  @media (max-width: 720px) {
+    .nav__name {
+      display: none;
+    }
+
+    .nav__link:not(.nav__link--always) {
+      display: none;
+    }
+  }
+
+  /* Touch pointers need a comfortable 44px target; the compact sizing above
+     is kept for mouse users where hover already signals the hit area. */
+  @media (pointer: coarse) {
+    .nav__link {
+      padding-block: 0.7rem;
+      min-height: 2.75rem;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .nav__icon {
+      width: 2.75rem;
+      height: 2.75rem;
+    }
+  }
+</style>

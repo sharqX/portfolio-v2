@@ -1,0 +1,209 @@
+/* ------------------------------------------------------------------
+   Design tokens. Every colour, measure and easing used anywhere in the
+   site is declared here. Components must not hardcode values.
+   ------------------------------------------------------------------ */
+
+:root {
+  /* --- Canvas & surfaces -------------------------------------------
+     NOTE: --canvas is duplicated as a literal in two places that cannot
+     read CSS variables — the <meta name="theme-color"> and its inline
+     setter in Base.astro, and the CANVAS constant in scripts/theme.ts.
+     Change all three together. */
+  --canvas: #fbfbfa;
+  --surface: #ffffff;
+  --surface-sunken: #f9f9f8;
+  --surface-key: #f7f6f3;
+
+  /* --- Ink ---------------------------------------------------------- */
+  --ink: #111111;
+  --ink-muted: #787774;
+  --ink-inverse: #ffffff;
+  --ink-hover: #333333;
+
+  /* --- Structure ---------------------------------------------------- */
+  --border: #eaeaea;
+  --border-hairline: rgba(0, 0, 0, 0.06);
+  --focus-ring: rgba(17, 17, 17, 0.4);
+
+  /* --- Muted pastels ------------------------------------------------ */
+  --pastel-red-bg: #fdebec;
+  --pastel-red-ink: #9f2f2d;
+  --pastel-blue-bg: #e1f3fe;
+  --pastel-blue-ink: #1f6c9f;
+  --pastel-green-bg: #edf3ec;
+  --pastel-green-ink: #346538;
+  --pastel-yellow-bg: #fbf3db;
+  --pastel-yellow-ink: #956400;
+
+  /* --- Typefaces ---------------------------------------------------- */
+  --font-sans:
+    "Geist Variable", "SF Pro Display", "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+  --font-serif:
+    "Newsreader Variable", "Lyon Text", "Iowan Old Style", Georgia,
+    "Times New Roman", serif;
+  --font-mono:
+    "JetBrains Mono Variable", "SF Mono", ui-monospace, Menlo, Consolas,
+    monospace;
+
+  /* --- Type scale --------------------------------------------------- */
+  --text-hero: clamp(2.75rem, 6.25vw, 4rem);
+  --text-section: clamp(1.875rem, 3.5vw, 2.5rem);
+  --text-title: clamp(1.25rem, 2vw, 1.5rem);
+  --text-body: 1rem;
+  --text-small: 0.875rem;
+  --text-micro: 0.75rem;
+
+  --leading-tight: 1.1;
+  --leading-snug: 1.35;
+  --leading-body: 1.6;
+
+  --tracking-tight: -0.03em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.05em;
+
+  /* --- Measure & rhythm --------------------------------------------- */
+  --measure: 64rem;
+  --measure-prose: 44rem;
+  --gutter: clamp(1.25rem, 5vw, 2.5rem);
+  --section-py: clamp(6rem, 12vw, 10rem);
+  --nav-height: 4.25rem;
+
+  /* --- Radii -------------------------------------------------------- */
+  --radius-card: 12px;
+  --radius-panel: 8px;
+  --radius-button: 6px;
+  --radius-key: 4px;
+  --radius-pill: 9999px;
+
+  /* --- Elevation ----------------------------------------------------
+     Shadow colour is tinted toward the canvas hue (a warm near-black in
+     light, plain black in dark) so a lifted card never casts a foreign
+     grey. Duplicated in both dark blocks below. */
+  --shadow-color: 28, 25, 20;
+  --shadow-flat: 0 0 0 rgba(var(--shadow-color), 0);
+  --shadow-lift: 0 2px 8px rgba(var(--shadow-color), 0.05);
+
+  /* --- Motion ------------------------------------------------------- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-reveal: 600ms;
+  --dur-hover: 200ms;
+  --stagger: 80ms;
+
+  /* --- Incidental chrome -------------------------------------------- */
+  --selection-bg: var(--pastel-yellow-bg);
+  --scrollbar-thumb: #dedddb;
+  --scrollbar-thumb-hover: #c9c8c5;
+  --window-dot: #e3e2e0;
+  --backdrop-line: rgba(17, 17, 17, 0.028);
+
+  /* Browser UI: form controls, scrollbars, the canvas behind the page. */
+  color-scheme: light;
+}
+
+/* ------------------------------------------------------------------
+   Dark theme.
+
+   Same structure, inverted: a warm charcoal canvas rather than black,
+   off-white ink rather than pure white, and pastels rebuilt as
+   low-luminance tints so a tag never glows against the page.
+
+   Applies when the system asks for it, unless the visitor has explicitly
+   chosen light; and always when they have explicitly chosen dark.
+   ------------------------------------------------------------------ */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --canvas: #191918;
+    --surface: #212120;
+    --surface-sunken: #1c1c1b;
+    --surface-key: #262624;
+
+    --ink: #edece9;
+    --ink-muted: #9b9a95;
+    --ink-inverse: #191918;
+    --ink-hover: #d5d3ce;
+
+    --border: #2e2e2c;
+    --border-hairline: rgba(255, 255, 255, 0.08);
+    --focus-ring: rgba(237, 236, 233, 0.5);
+
+    --pastel-red-bg: #3a2422;
+    --pastel-red-ink: #f0a9a5;
+    --pastel-blue-bg: #1e2f3b;
+    --pastel-blue-ink: #a8d4f0;
+    --pastel-green-bg: #1f2e22;
+    --pastel-green-ink: #a9d3ae;
+    --pastel-yellow-bg: #382e1c;
+    --pastel-yellow-ink: #e8c87e;
+
+    /* A hairline lift reads as nothing on a dark ground, so the shadow
+       carries more alpha than the light theme's 0.05, and drops the warm
+       tint for plain black. */
+    --shadow-color: 0, 0, 0;
+    --shadow-lift: 0 2px 8px rgba(var(--shadow-color), 0.36);
+
+    --selection-bg: #3d3a2a;
+    --scrollbar-thumb: #3a3a37;
+    --scrollbar-thumb-hover: #4c4c48;
+    --window-dot: #3a3a37;
+    --backdrop-line: rgba(255, 255, 255, 0.028);
+
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --canvas: #191918;
+  --surface: #212120;
+  --surface-sunken: #1c1c1b;
+  --surface-key: #262624;
+
+  --ink: #edece9;
+  --ink-muted: #9b9a95;
+  --ink-inverse: #191918;
+  --ink-hover: #d5d3ce;
+
+  --border: #2e2e2c;
+  --border-hairline: rgba(255, 255, 255, 0.08);
+  --focus-ring: rgba(237, 236, 233, 0.5);
+
+  --pastel-red-bg: #3a2422;
+  --pastel-red-ink: #f0a9a5;
+  --pastel-blue-bg: #1e2f3b;
+  --pastel-blue-ink: #a8d4f0;
+  --pastel-green-bg: #1f2e22;
+  --pastel-green-ink: #a9d3ae;
+  --pastel-yellow-bg: #382e1c;
+  --pastel-yellow-ink: #e8c87e;
+
+  /* Plain black on the dark ground; see the light :root for the rationale. */
+  --shadow-color: 0, 0, 0;
+  --shadow-lift: 0 2px 8px rgba(var(--shadow-color), 0.36);
+
+  --selection-bg: #3d3a2a;
+  --scrollbar-thumb: #3a3a37;
+  --scrollbar-thumb-hover: #4c4c48;
+  --window-dot: #3a3a37;
+  --backdrop-line: rgba(255, 255, 255, 0.028);
+
+  color-scheme: dark;
+}
+
+/* Accent helpers. Set `data-accent` on any element to scope its pastel pair. */
+[data-accent="red"] {
+  --accent-bg: var(--pastel-red-bg);
+  --accent-ink: var(--pastel-red-ink);
+}
+[data-accent="blue"] {
+  --accent-bg: var(--pastel-blue-bg);
+  --accent-ink: var(--pastel-blue-ink);
+}
+[data-accent="green"] {
+  --accent-bg: var(--pastel-green-bg);
+  --accent-ink: var(--pastel-green-ink);
+}
+[data-accent="yellow"] {
+  --accent-bg: var(--pastel-yellow-bg);
+  --accent-ink: var(--pastel-yellow-ink);
+}

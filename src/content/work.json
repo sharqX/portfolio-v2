@@ -1,0 +1,42 @@
+[
+  {
+    "id": "vantage-circle-associate",
+    "order": 1,
+    "company": "Vantage Circle",
+    "companyUrl": "https://www.vantagecircle.com/",
+    "role": "Associate Performance Test Engineer",
+    "period": "Apr 2026 – Present",
+    "highlights": [
+      "Automated weekly Lighthouse performance audits via GitHub Actions, using AI to detect regressions, prioritize findings, and route remediation insights, reducing manual analysis by 50%.",
+      "Developed an AI-powered performance dashboard consolidating load-testing output and system monitoring metrics into a single view, shortening the path from test execution to trend, bottleneck, and SLA adherence analysis.",
+      "Engineered and executed performance testing strategies for cloud-native applications and APIs, diagnosing scalability limits, resource constraints, and latency issues across critical services.",
+      "Drove root-cause analysis of performance regressions with development, DevOps, and platform teams, tuning system configuration to improve application reliability, scalability, and SLA adherence."
+    ]
+  },
+  {
+    "id": "vantage-circle-trainee",
+    "order": 2,
+    "company": "Vantage Circle",
+    "companyUrl": "https://www.vantagecircle.com/",
+    "role": "Performance Test Engineer - Trainee",
+    "period": "Oct 2025 – Mar 2026",
+    "highlights": [
+      "Designed and executed API load, stress, and baseline test suites in Locust, modeling real-world user behavior with CSV-driven test data.",
+      "Built reusable Python-based Locust frameworks with dynamic feeders, in-flight validation, and failure handling to preserve result integrity under sustained load.",
+      "Integrated performance testing into CI/CD pipelines for continuous performance monitoring and automated regression detection, analyzing response time, throughput, and error rate to isolate bottlenecks before production release."
+    ]
+  },
+  {
+    "id": "pearlthoughts",
+    "order": 3,
+    "company": "PearlThoughts",
+    "companyUrl": "https://pearlthoughts.com/",
+    "role": "DevOps Engineer Intern",
+    "period": "Jun 2024 – Jul 2024",
+    "highlights": [
+      "Deployed a Strapi and React application to AWS ECS Fargate using Terraform, codifying EC2, VPC, security groups, Application Load Balancer, and IAM roles as infrastructure as code.",
+      "Containerized the application with Docker and published images to Amazon ECR, reducing deployment time by 30%.",
+      "Automated build and release with GitHub Actions, delivering 60% faster deployments and a 20% increase in successful deployments."
+    ]
+  }
+]

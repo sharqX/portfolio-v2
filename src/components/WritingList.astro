@@ -1,0 +1,119 @@
+---
+import { Icon } from "astro-icon/components";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  posts: CollectionEntry<"blog">[];
+}
+
+const { posts } = Astro.props;
+
+const formatter = new Intl.DateTimeFormat("en-GB", {
+  day: "2-digit",
+  month: "short",
+  year: "numeric",
+});
+---
+
+<ul class="writing">
+  {
+    posts.map((post, i) => (
+      <li class="writing__row" data-reveal style={`--index: ${i}`}>
+        <a class="writing__link link-plain" href={`/blog/${post.id}`}>
+          <time
+            class="mono writing__date"
+            datetime={post.data.date.toISOString()}
+          >
+            {formatter.format(post.data.date)}
+          </time>
+          <span class="writing__body">
+            <span class="writing__title">{post.data.title}</span>
+            <span class="writing__summary">{post.data.summary}</span>
+          </span>
+          <Icon
+            aria-hidden="true"
+            class="writing__arrow"
+            name="ph:arrow-right-bold"
+            width="16"
+            height="16"
+          />
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .writing {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .writing__row {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .writing__link {
+    display: grid;
+    grid-template-columns: 8.5rem minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 1.5rem;
+    padding-block: 1.5rem;
+    transition: background-color var(--dur-hover) ease;
+  }
+
+  .writing__link:hover {
+    background: color-mix(in srgb, var(--surface-key) 60%, transparent);
+  }
+
+  .writing__date {
+    font-size: var(--text-micro);
+    white-space: nowrap;
+  }
+
+  .writing__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .writing__title {
+    font-family: var(--font-serif);
+    font-size: 1.375rem;
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-snug);
+  }
+
+  .writing__summary {
+    color: var(--ink-muted);
+    font-size: var(--text-small);
+    max-width: 62ch;
+  }
+
+  .writing__arrow {
+    align-self: center;
+    color: var(--border);
+    transition:
+      transform var(--dur-hover) var(--ease-out-expo),
+      color var(--dur-hover) ease;
+  }
+
+  .writing__link:hover .writing__arrow {
+    transform: translateX(3px);
+    color: var(--ink);
+  }
+
+  @media (max-width: 720px) {
+    .writing__link {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.5rem 1rem;
+      padding-inline: 0.25rem;
+    }
+
+    .writing__date {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

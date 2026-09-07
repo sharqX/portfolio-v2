@@ -1,0 +1,71 @@
+---
+import { Icon } from "astro-icon/components";
+import { site } from "../site.config";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <p class="footer__line">
+      <span>&copy; {year} {site.name}</span>
+      <span class="footer__sep" aria-hidden="true">/</span>
+      <a href={`mailto:${site.email}`}>{site.email}</a>
+    </p>
+
+    <p class="footer__line">
+      <a class="footer__meta link-plain" href="/rss.xml">
+        <Icon
+          aria-hidden="true"
+          name="ph:rss-simple-bold"
+          width="14"
+          height="14"
+        /> RSS
+      </a>
+      <span class="footer__sep" aria-hidden="true">/</span>
+      <span class="footer__meta">Built with Astro, served by nginx</span>
+      <span class="footer__sep" aria-hidden="true">/</span>
+      <a class="footer__meta link-plain" href="#top">Back to top</a>
+    </p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    /* The last section already contributes its own bottom padding, so the
+       footer adds only a small amount of its own. */
+    border-top: 1px solid var(--border);
+    padding-block: 2.5rem;
+  }
+
+  .footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    font-size: var(--text-small);
+    color: var(--ink-muted);
+  }
+
+  .footer__line {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .footer__meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: color var(--dur-hover) ease;
+  }
+
+  .footer__meta:hover {
+    color: var(--ink);
+  }
+
+  .footer__sep {
+    color: var(--border);
+  }
+</style>

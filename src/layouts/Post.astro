@@ -1,0 +1,197 @@
+---
+import { Icon } from "astro-icon/components";
+import type { CollectionEntry } from "astro:content";
+
+import Base from "./Base.astro";
+import Tag from "../components/Tag.astro";
+import "../styles/prose.css";
+
+interface Props {
+  post: CollectionEntry<"blog">;
+  readingMinutes: number;
+  prev: CollectionEntry<"blog"> | null;
+  next: CollectionEntry<"blog"> | null;
+}
+
+const { post, readingMinutes, prev, next } = Astro.props;
+
+const formatter = new Intl.DateTimeFormat("en-GB", {
+  day: "2-digit",
+  month: "long",
+  year: "numeric",
+});
+---
+
+<Base
+  title={post.data.title}
+  description={post.data.summary}
+  type="article"
+  publishedTime={post.data.date}
+>
+  <article class="section post">
+    <div class="container">
+      <a class="post__back link-plain" href="/blog">
+        <Icon
+          aria-hidden="true"
+          name="ph:arrow-left-bold"
+          width="14"
+          height="14"
+        />
+        All posts
+      </a>
+
+      <header class="post__head" data-reveal>
+        <p class="mono post__meta">
+          <time datetime={post.data.date.toISOString()}>
+            {formatter.format(post.data.date)}
+          </time>
+          <span aria-hidden="true">/</span>
+          <span>{readingMinutes} min read</span>
+        </p>
+        <h1 class="post__title">{post.data.title}</h1>
+        <p class="post__summary">{post.data.summary}</p>
+        {
+          post.data.tags.length > 0 && (
+            <div class="tag-row post__tags">
+              {post.data.tags.map((tag) => (
+                <Tag accent={post.data.accent}>{tag}</Tag>
+              ))}
+            </div>
+          )
+        }
+      </header>
+
+      <hr class="rule post__rule" />
+
+      <div class="prose" data-reveal>
+        <slot />
+      </div>
+
+      {
+        (prev || next) && (
+          <nav class="post__nav" aria-label="More posts">
+            {next ? (
+              <a
+                class="post__nav-link card link-plain"
+                href={`/blog/${next.id}`}
+              >
+                <span class="mono post__nav-label">Newer</span>
+                <span class="post__nav-title">{next.data.title}</span>
+              </a>
+            ) : (
+              <span />
+            )}
+            {prev && (
+              <a
+                class="post__nav-link card link-plain post__nav-link--end"
+                href={`/blog/${prev.id}`}
+              >
+                <span class="mono post__nav-label">Older</span>
+                <span class="post__nav-title">{prev.data.title}</span>
+              </a>
+            )}
+          </nav>
+        )
+      }
+    </div>
+  </article>
+</Base>
+
+<style>
+  .post {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) var(--section-py);
+  }
+
+  .post__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-micro);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    transition: color var(--dur-hover) ease;
+  }
+
+  .post__back:hover {
+    color: var(--ink);
+  }
+
+  .post__head {
+    max-width: var(--measure-prose);
+    margin-block-start: 2.5rem;
+  }
+
+  .post__meta {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: var(--text-micro);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+  }
+
+  .post__title {
+    margin-block-start: 1rem;
+    font-size: clamp(2.25rem, 5vw, 3.25rem);
+    text-wrap: balance;
+  }
+
+  .post__summary {
+    margin-block-start: 1.25rem;
+    font-size: 1.125rem;
+    color: var(--ink-muted);
+  }
+
+  .post__tags {
+    margin-block-start: 1.5rem;
+  }
+
+  .post__rule {
+    max-width: var(--measure-prose);
+    margin-block: clamp(2.5rem, 5vw, 3.5rem);
+  }
+
+  .post__nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    max-width: var(--measure-prose);
+    margin-block-start: clamp(3rem, 6vw, 5rem);
+  }
+
+  .post__nav-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.25rem 1.5rem;
+  }
+
+  .post__nav-link--end {
+    text-align: right;
+  }
+
+  .post__nav-label {
+    font-size: var(--text-micro);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+  }
+
+  .post__nav-title {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-snug);
+  }
+
+  @media (max-width: 640px) {
+    .post__nav {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .post__nav-link--end {
+      text-align: left;
+    }
+  }
+</style>

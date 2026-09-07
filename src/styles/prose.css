@@ -1,0 +1,174 @@
+/* ------------------------------------------------------------------
+   Long-form article typography. Scoped to .prose so it never leaks
+   into the marketing sections on the home page.
+   ------------------------------------------------------------------ */
+
+.prose {
+  max-width: var(--measure-prose);
+  font-size: 1.0625rem;
+  line-height: var(--leading-body);
+  color: var(--ink);
+}
+
+.prose > * + * {
+  margin-block-start: 1.5rem;
+}
+
+.prose h2,
+.prose h3,
+.prose h4 {
+  margin-block-start: 3rem;
+  margin-block-end: -0.5rem;
+  scroll-margin-top: calc(var(--nav-height) + 1.5rem);
+}
+
+.prose h2 {
+  font-size: 1.75rem;
+}
+
+.prose h3 {
+  font-size: 1.375rem;
+}
+
+.prose h4 {
+  font-size: 1.0625rem;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+}
+
+.prose p {
+  text-wrap: pretty;
+}
+
+.prose a {
+  text-decoration-color: var(--ink-muted);
+}
+
+.prose strong {
+  font-weight: 600;
+}
+
+.prose ul,
+.prose ol {
+  padding-inline-start: 1.25rem;
+}
+
+.prose li + li {
+  margin-block-start: 0.5rem;
+}
+
+.prose li::marker {
+  color: var(--ink-muted);
+}
+
+.prose blockquote {
+  border-inline-start: 1px solid var(--border);
+  padding-inline-start: 1.5rem;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.25rem;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin-block: 3rem;
+}
+
+.prose img {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-panel);
+}
+
+.prose figure figcaption {
+  margin-block-start: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  color: var(--ink-muted);
+}
+
+/* --- Inline code and fenced blocks --------------------------------- */
+
+.prose :not(pre) > code {
+  background: var(--pastel-blue-bg);
+  color: var(--pastel-blue-ink);
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  padding: 0.15em 0.4em;
+  border-radius: var(--radius-key);
+}
+
+.prose pre {
+  background: var(--surface-key) !important;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-panel);
+  padding: 1.25rem 1.5rem;
+  overflow-x: auto;
+  font-size: var(--text-small);
+  line-height: 1.65;
+}
+
+.prose pre code {
+  font-family: var(--font-mono);
+  background: none;
+  padding: 0;
+}
+
+/* Shiki emits both themes: github-light inline, github-dark as CSS variables.
+   The pre background is forced to our own surface in both, so only the token
+   colours are swapped here. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .prose .astro-code,
+  :root:not([data-theme="light"]) .prose .astro-code span {
+    color: var(--shiki-dark) !important;
+    font-style: var(--shiki-dark-font-style) !important;
+    font-weight: var(--shiki-dark-font-weight) !important;
+    text-decoration: var(--shiki-dark-text-decoration) !important;
+  }
+}
+
+:root[data-theme="dark"] .prose .astro-code,
+:root[data-theme="dark"] .prose .astro-code span {
+  color: var(--shiki-dark) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
+/* --- Tables -------------------------------------------------------- */
+
+/* Markdown emits a bare <table> with no wrapper, so the table itself has to
+   be the scroll container or a wide one overflows the page on narrow screens. */
+.prose table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-small);
+}
+
+.prose td code {
+  white-space: nowrap;
+}
+
+.prose th,
+.prose td {
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 1rem 0.75rem 0;
+  text-align: left;
+  vertical-align: top;
+}
+
+.prose th {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--ink-muted);
+  font-weight: 400;
+}

@@ -1,0 +1,59 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    name: Build and check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check content and components
+        run: npx astro check
+
+      - name: Build
+        run: npm run build
+
+  deploy:
+    name: Build image on the host and run it
+    needs: check
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      # No registry. The host holds a git checkout at /opt/apps/portfolio-v2,
+      # builds the image locally from the Dockerfile, and (re)starts the
+      # container. `docker compose up -d --build` also joins it to the existing
+      # `portfolio` project's network so portfolio-nginx-1 can route to it.
+      - name: Rebuild and restart on the host
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          script: |
+            set -e
+            cd /opt/apps/portfolio_v2
+            git fetch origin main
+            git reset --hard origin/main
+            docker compose up -d --build
+            docker image prune -f
+
+      - name: Verify the site answers
+        run: |
+          sleep 10
+          curl --fail --silent --show-error --head https://v2.zararsharique.com | head -1

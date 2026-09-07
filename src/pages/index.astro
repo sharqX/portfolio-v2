@@ -1,0 +1,88 @@
+---
+import { getCollection } from "astro:content";
+import { Icon } from "astro-icon/components";
+
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import Section from "../components/Section.astro";
+import WorkTimeline from "../components/WorkTimeline.astro";
+import ProjectGrid from "../components/ProjectGrid.astro";
+import WritingList from "../components/WritingList.astro";
+import Toolbox from "../components/Toolbox.astro";
+import Contact from "../components/Contact.astro";
+
+const work = (await getCollection("work")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+const projects = (await getCollection("projects")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+const posts = (
+  await getCollection("blog", ({ data }) => !data.draft || import.meta.env.DEV)
+)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+---
+
+<Base>
+  <Hero />
+
+  <Section
+    id="work"
+    eyebrow="Work"
+    title="Where I've worked"
+    lede="Three roles across performance engineering and cloud infrastructure delivery."
+  >
+    <WorkTimeline entries={work} />
+  </Section>
+
+  <Section
+    id="projects"
+    eyebrow="Projects"
+    title="Things I've built and written up"
+    lede="Each of these has a full write-up covering the architecture, what broke, and what I would do differently."
+  >
+    <ProjectGrid projects={projects} />
+  </Section>
+
+  <Section
+    id="writing"
+    eyebrow="Writing"
+    title="Notes from the pipeline"
+    lede="Longer pieces on infrastructure, deployment and the parts that only show up in production."
+  >
+    <WritingList posts={posts} />
+    <p class="more" data-reveal>
+      <a class="btn btn--ghost" href="/blog">
+        All posts
+        <Icon
+          aria-hidden="true"
+          name="ph:arrow-right-bold"
+          width="16"
+          height="16"
+        />
+      </a>
+    </p>
+  </Section>
+
+  <Section
+    id="toolbox"
+    eyebrow="Toolbox"
+    title="What I reach for"
+    lede="Tools I've used on real deployments rather than only in tutorials."
+  >
+    <Toolbox />
+  </Section>
+
+  <Section id="contact" eyebrow="Contact" title="Get in touch">
+    <Contact />
+  </Section>
+</Base>
+
+<style>
+  .more {
+    margin-block-start: 2rem;
+  }
+</style>

@@ -1,0 +1,118 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  entries: CollectionEntry<"work">[];
+}
+
+const { entries } = Astro.props;
+---
+
+<ol class="timeline">
+  {
+    entries.map((entry, i) => (
+      <li class="timeline__item" data-reveal style={`--index: ${i}`}>
+        <span class="timeline__node" aria-hidden="true" />
+        <div class="timeline__head">
+          <h3 class="timeline__role">{entry.data.role}</h3>
+          <p class="timeline__company">
+            {entry.data.companyUrl ? (
+              <a
+                href={entry.data.companyUrl}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {entry.data.company}
+              </a>
+            ) : (
+              entry.data.company
+            )}
+          </p>
+          {entry.data.period && (
+            <p class="mono timeline__period">{entry.data.period}</p>
+          )}
+        </div>
+        <ul class="timeline__highlights">
+          {entry.data.highlights.map((highlight) => (
+            <li>{highlight}</li>
+          ))}
+        </ul>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .timeline {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-inline-start: 1px solid var(--border);
+  }
+
+  .timeline__item {
+    position: relative;
+    padding-inline-start: clamp(1.5rem, 4vw, 3rem);
+    padding-block-end: clamp(2.5rem, 5vw, 3.5rem);
+  }
+
+  .timeline__item:last-child {
+    padding-block-end: 0;
+  }
+
+  .timeline__node {
+    position: absolute;
+    inset-inline-start: -4.5px;
+    top: 0.55rem;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--canvas);
+    border: 1px solid var(--ink-muted);
+  }
+
+  .timeline__item:first-child .timeline__node {
+    background: var(--ink);
+    border-color: var(--ink);
+  }
+
+  .timeline__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.85rem;
+  }
+
+  .timeline__role {
+    font-size: var(--text-title);
+  }
+
+  .timeline__company {
+    font-size: var(--text-small);
+    color: var(--ink-muted);
+  }
+
+  .timeline__company a {
+    text-decoration-color: var(--ink-muted);
+  }
+
+  .timeline__period {
+    margin-inline-start: auto;
+    font-size: var(--text-micro);
+  }
+
+  .timeline__highlights {
+    margin-block-start: 1.1rem;
+    padding-inline-start: 1.1rem;
+    max-width: 68ch;
+    color: var(--ink);
+  }
+
+  .timeline__highlights li + li {
+    margin-block-start: 0.6rem;
+  }
+
+  .timeline__highlights li::marker {
+    color: var(--border);
+  }
+</style>

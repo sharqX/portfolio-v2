@@ -1,0 +1,53 @@
+---
+import { Icon } from "astro-icon/components";
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Page not found" description="That page does not exist.">
+  <section class="section">
+    <div class="container missing">
+      <p class="eyebrow">Error 404</p>
+      <h1 class="missing__title">This page isn't here.</h1>
+      <p class="missing__lede">
+        The link may be out of date, or the page may have moved when the site
+        was rebuilt. Both routes below still work.
+      </p>
+      <div class="missing__actions">
+        <a class="btn btn--primary" href="/">
+          <Icon
+            aria-hidden="true"
+            name="ph:arrow-left-bold"
+            width="16"
+            height="16"
+          />
+          Back home
+        </a>
+        <a class="btn btn--ghost" href="/blog">Read the writing</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .missing {
+    max-width: 44rem;
+    padding-block: clamp(3rem, 8vw, 6rem);
+  }
+
+  .missing__title {
+    margin-block-start: 1.25rem;
+    font-size: var(--text-section);
+  }
+
+  .missing__lede {
+    margin-block-start: 1rem;
+    color: var(--ink-muted);
+  }
+
+  .missing__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-block-start: 2rem;
+  }
+</style>

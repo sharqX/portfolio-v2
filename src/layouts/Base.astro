@@ -1,0 +1,135 @@
+---
+import '@fontsource-variable/geist';
+import '@fontsource-variable/newsreader';
+import '@fontsource-variable/newsreader/wght-italic.css';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/tokens.css';
+import '../styles/base.css';
+
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import AmbientBackdrop from '../components/AmbientBackdrop.astro';
+import { site } from '../site.config';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Set on article pages so OG type and canonical URL are right. */
+  type?: 'website' | 'article';
+  publishedTime?: Date;
+}
+
+const {
+  title,
+  description = site.description,
+  type = 'website',
+  publishedTime,
+} = Astro.props;
+
+const pageTitle = title ? `${title} — ${site.shortName}` : `${site.name} — ${site.role}`;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url);
+const ogImage = new URL('/og.png', Astro.site ?? site.url);
+const analytics = import.meta.env.PROD ? site.analyticsId : null;
+---
+
+<!doctype html>
+<html lang={site.locale} class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content={site.name} />
+    {
+      publishedTime && (
+        <meta
+          property="article:published_time"
+          content={publishedTime.toISOString()}
+        />
+      )
+    }
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#fbfbfa" />
+    <meta
+      name="color-scheme"
+      content="light dark"
+    />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${site.name} — writing`}
+      href={new URL('/rss.xml', Astro.site ?? site.url)}
+    />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <script is:inline>
+      document.documentElement.classList.remove('no-js');
+
+      /* Applied before first paint so an explicitly chosen theme never
+         flashes the other one. With nothing stored the attribute stays off
+         and the prefers-color-scheme rules in tokens.css decide. */
+      try {
+        var stored = localStorage.getItem('theme');
+        if (stored === 'light' || stored === 'dark') {
+          document.documentElement.setAttribute('data-theme', stored);
+          document
+            .querySelector('meta[name="theme-color"]')
+            .setAttribute('content', stored === 'dark' ? '#191918' : '#fbfbfa');
+        }
+      } catch (error) {
+        /* Site data blocked; the system theme still applies. */
+      }
+    </script>
+
+    {
+      analytics && (
+        <Fragment>
+          <script
+            is:inline
+            async
+            src={`https://www.googletagmanager.com/gtag/js?id=${analytics}`}
+          />
+          <script is:inline define:vars={{ analytics }}>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+              dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', analytics);
+          </script>
+        </Fragment>
+      )
+    }
+  </head>
+
+  <body id="top">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <AmbientBackdrop />
+    <Nav />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      import { initReveal } from '../scripts/reveal';
+      import { initTheme } from '../scripts/theme';
+
+      initTheme();
+      initReveal();
+    </script>
+  </body>
+</html>

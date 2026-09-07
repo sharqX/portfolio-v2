@@ -1,0 +1,48 @@
+# build output
+dist/
+
+# generated types
+.astro/
+*.tsbuildinfo
+
+# cache
+.cache/
+.temp/
+.tmp/
+
+# dependencies
+node_modules/
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# environment variables
+.env
+.env.*
+!.env.example
+
+# editor / OS
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*.swo
+
+# node
+.node_repl_history
+.npm/
+.eslintcache
+
+# Claude Code
+.claude/settings.local.json
+.claude/*.local.json
+

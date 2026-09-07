@@ -1,0 +1,9 @@
+dist/
+.astro/
+node_modules/
+package-lock.json
+public/
+
+# prettier-plugin-astro can't parse the <script> nested in a {analytics && (...)}
+# expression here; Astro itself builds it fine.
+src/layouts/Base.astro

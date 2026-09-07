@@ -1,0 +1,140 @@
+---
+import { Icon } from "astro-icon/components";
+import Tag from "./Tag.astro";
+
+/**
+ * The stack, grouped. Edit here — this is presentation-level content and
+ * deliberately not a collection.
+ *
+ * Tags render in the neutral default (no accent). Colour on this list would
+ * only be decorative — the pastel pairs are reserved for content categories
+ * (blog post topics), not the toolbox.
+ */
+const groups = [
+  {
+    label: "Cloud",
+    icon: "ph:cloud-bold",
+    items: ["AWS EC2", "VPC", "ECS Fargate", "ECR", "IAM", "ALB"],
+  },
+  {
+    label: "Infrastructure as code",
+    icon: "ph:stack-bold",
+    items: ["Terraform"],
+  },
+  {
+    label: "Containers",
+    icon: "ph:cube-bold",
+    items: ["Docker", "Kubernetes"],
+  },
+  {
+    label: "Delivery",
+    icon: "ph:git-branch-bold",
+    items: ["GitHub Actions", "Jenkins"],
+  },
+  {
+    label: "Observability",
+    icon: "ph:chart-line-bold",
+    items: ["Prometheus", "Grafana"],
+  },
+  {
+    label: "Languages & systems",
+    icon: "ph:terminal-window-bold",
+    items: ["Python", "C++", "Linux", "Nginx"],
+  },
+];
+---
+
+<div class="toolbox card">
+  {
+    groups.map((group, i) => (
+      <div class="toolbox__cell" data-reveal style={`--index: ${i}`}>
+        <p class="toolbox__label">
+          <Icon aria-hidden="true" name={group.icon} width="15" height="15" />
+          {group.label}
+        </p>
+        <div class="tag-row">
+          {group.items.map((item) => (
+            <Tag>{item}</Tag>
+          ))}
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .toolbox {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    overflow: hidden;
+  }
+
+  .toolbox:hover {
+    box-shadow: var(--shadow-flat);
+  }
+
+  .toolbox__cell {
+    padding: clamp(1.5rem, 3vw, 2rem);
+    border-inline-end: 1px solid var(--border);
+    border-block-end: 1px solid var(--border);
+  }
+
+  .toolbox__cell:nth-child(3n) {
+    border-inline-end: 0;
+  }
+
+  .toolbox__cell:nth-last-child(-n + 3) {
+    border-block-end: 0;
+  }
+
+  .toolbox__label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-block-end: 1rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-micro);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  @media (max-width: 900px) {
+    .toolbox {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .toolbox__cell:nth-child(3n) {
+      border-inline-end: 1px solid var(--border);
+    }
+
+    .toolbox__cell:nth-child(2n) {
+      border-inline-end: 0;
+    }
+
+    .toolbox__cell:nth-last-child(-n + 3) {
+      border-block-end: 1px solid var(--border);
+    }
+
+    .toolbox__cell:nth-last-child(-n + 2) {
+      border-block-end: 0;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .toolbox {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .toolbox__cell,
+    .toolbox__cell:nth-child(3n),
+    .toolbox__cell:nth-child(2n) {
+      border-inline-end: 0;
+      border-block-end: 1px solid var(--border);
+    }
+
+    .toolbox__cell:last-child {
+      border-block-end: 0;
+    }
+  }
+</style>

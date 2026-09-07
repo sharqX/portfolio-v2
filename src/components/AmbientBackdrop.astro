@@ -1,0 +1,31 @@
+---
+/**
+ * Fixed, non-interactive depth layer: a hairline grid that fades out down
+ * the page. Nothing here scrolls or animates.
+ */
+---
+
+<div class="backdrop" aria-hidden="true">
+  <div class="backdrop__grid"></div>
+</div>
+
+<style>
+  .backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .backdrop__grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, var(--backdrop-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--backdrop-line) 1px, transparent 1px);
+    background-size: 88px 88px;
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 65%);
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 65%);
+  }
+</style>

@@ -1,0 +1,25 @@
+services:
+  my-portfolio-v2:
+    # Built on the host from the Dockerfile in this dir — no registry.
+    # Roll back with: git reset --hard <sha> && docker compose up -d --build
+    build:
+      context: .
+    image: portfolio-v2:latest
+    container_name: my-portfolio-v2
+    restart: unless-stopped
+    # No published ports. The nginx container in the `portfolio` compose project
+    # terminates TLS and reverse-proxies to this container over the shared
+    # network (see deploy/proxy-v2.zararsharique.com.conf). The image serves the
+    # built site on :80 from its baked nginx.conf.
+    expose:
+      - "80"
+    networks:
+      - web
+
+networks:
+  # The default network of the existing `portfolio` compose project on the host
+  # (verify with `docker network ls`). Joining it lets portfolio-nginx-1 resolve
+  # `my-portfolio-v2` by name.
+  web:
+    external: true
+    name: portfolio_default

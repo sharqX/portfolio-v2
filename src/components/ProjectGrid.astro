@@ -1,0 +1,135 @@
+---
+import { Icon } from "astro-icon/components";
+import type { CollectionEntry } from "astro:content";
+import Tag from "./Tag.astro";
+
+/**
+ * Each project sets its own `accent` in projects.json as a stable identity
+ * colour — one distinct pastel per card, never repeated. Keep it that way:
+ * if a fifth project can't take an unused pastel, it goes neutral rather
+ * than doubling up a hue.
+ */
+interface Props {
+  projects: CollectionEntry<"projects">[];
+}
+
+const { projects } = Astro.props;
+
+const formatter = new Intl.DateTimeFormat("en-GB", {
+  month: "short",
+  year: "numeric",
+});
+---
+
+<div class="bento">
+  {
+    projects.map((project, i) => (
+      <a
+        class:list={[
+          "bento__card",
+          "card",
+          "link-plain",
+          project.data.featured && "bento__card--wide",
+        ]}
+        href={project.data.url}
+        rel="noopener noreferrer"
+        target="_blank"
+        data-accent={project.data.accent}
+        data-reveal
+        style={`--index: ${i}`}
+      >
+        <p class="mono bento__date">{formatter.format(project.data.date)}</p>
+        <h3 class="bento__title">{project.data.title}</h3>
+        <p class="bento__summary">{project.data.summary}</p>
+        <div class="bento__foot">
+          <div class="tag-row">
+            {project.data.tags.map((tag) => (
+              <Tag accent={project.data.accent}>{tag}</Tag>
+            ))}
+          </div>
+          <Icon
+            aria-hidden="true"
+            class="bento__arrow"
+            name="ph:arrow-up-right-bold"
+            width="16"
+            height="16"
+          />
+        </div>
+      </a>
+    ))
+  }
+</div>
+
+<style>
+  .bento {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-auto-flow: dense;
+    gap: 1rem;
+  }
+
+  .bento__card {
+    grid-column: span 3;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    min-height: 15rem;
+  }
+
+  .bento__card--wide {
+    grid-column: span 4;
+  }
+
+  .bento__card:not(.bento__card--wide) {
+    grid-column: span 2;
+  }
+
+  .bento__date {
+    font-size: var(--text-micro);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+  }
+
+  .bento__title {
+    margin-block-start: 0.85rem;
+    font-size: var(--text-title);
+  }
+
+  .bento__summary {
+    margin-block-start: 0.75rem;
+    color: var(--ink-muted);
+    font-size: var(--text-small);
+    max-width: 46ch;
+  }
+
+  .bento__foot {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-block-start: auto;
+    padding-block-start: 1.75rem;
+  }
+
+  .bento__arrow {
+    flex: none;
+    color: var(--ink-muted);
+    transition:
+      transform var(--dur-hover) var(--ease-out-expo),
+      color var(--dur-hover) ease;
+  }
+
+  .bento__card:hover .bento__arrow {
+    transform: translate(2px, -2px);
+    color: var(--ink);
+  }
+
+  @media (max-width: 900px) {
+    .bento__card,
+    .bento__card--wide,
+    .bento__card:not(.bento__card--wide) {
+      grid-column: span 6;
+      min-height: 0;
+    }
+  }
+</style>

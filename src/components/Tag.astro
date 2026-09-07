@@ -1,0 +1,10 @@
+---
+interface Props {
+  accent?: "red" | "blue" | "green" | "yellow";
+  class?: string;
+}
+
+const { accent, class: className } = Astro.props;
+---
+
+<span class:list={["tag", className]} data-accent={accent}><slot /></span>
