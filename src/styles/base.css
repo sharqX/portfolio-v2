@@ -54,8 +54,8 @@ select {
 
 :focus-visible {
   outline: 2px solid var(--focus-ring);
-  outline-offset: 3px;
-  border-radius: 2px;
+  outline-offset: 2px;
+  border-radius: 0;
 }
 
 ::-webkit-scrollbar {
@@ -179,6 +179,7 @@ a:hover {
   border: 1px solid transparent;
   font-size: var(--text-small);
   font-weight: 500;
+  letter-spacing: 0.02em;
   line-height: 1;
   text-decoration: none;
   cursor: pointer;
@@ -186,20 +187,24 @@ a:hover {
   transition:
     background-color var(--dur-hover) ease,
     border-color var(--dur-hover) ease,
-    transform var(--dur-hover) ease;
+    filter var(--dur-hover) ease;
 }
 
+/* System press state: dim, not scale. */
 .btn:active {
-  transform: scale(0.98);
+  filter: brightness(0.94);
 }
 
+/* The one loud colour: one primary action per view. */
 .btn--primary {
-  background: var(--ink);
-  color: var(--ink-inverse);
+  background: var(--ember-500);
+  border-color: var(--ember-600);
+  color: #fff;
 }
 
 .btn--primary:hover {
-  background: var(--ink-hover);
+  background: var(--ember-600);
+  border-color: var(--ember-700);
 }
 
 .btn--ghost {
@@ -212,19 +217,33 @@ a:hover {
   background: var(--surface-key);
 }
 
+/* Link variant: a text action, steel at rest, ember on hover. */
+.btn--link {
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
+  color: var(--steel-600);
+}
+
+.btn--link:hover {
+  color: var(--ember-600);
+}
+
 /* --- Tags ---------------------------------------------------------- */
 
 .tag {
   display: inline-flex;
   align-items: center;
-  padding: 0.25rem 0.6rem;
+  padding: 0.2rem 0.55rem;
   border-radius: var(--radius-pill);
+  border: 1px solid
+    color-mix(in srgb, var(--accent-ink, var(--ink-muted)) 22%, transparent);
   background: var(--accent-bg, var(--surface-key));
   color: var(--accent-ink, var(--ink-muted));
   font-family: var(--font-mono);
   font-size: var(--text-micro);
   line-height: 1.4;
-  letter-spacing: var(--tracking-wide);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -242,11 +261,18 @@ a:hover {
   border: 1px solid var(--border);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-flat);
-  transition: box-shadow var(--dur-hover) ease;
+  transition:
+    border-color var(--dur-hover) ease,
+    box-shadow var(--dur-hover) ease;
 }
 
 .card:hover {
   box-shadow: var(--shadow-lift);
+}
+
+/* Interactive (link) cards also take the brand border on hover. */
+a.card:hover {
+  border-color: var(--ember-500);
 }
 
 /* --- Physical keys ------------------------------------------------- */

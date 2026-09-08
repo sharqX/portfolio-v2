@@ -29,8 +29,10 @@
   --ember-50: #fef2ee;
   --ember-100: #fcdfd5;
   --ember-300: #f4917a;
+  --ember-400: #ee6e50;
   --ember-500: #e8552f;
   --ember-600: #c8401d;
+  --ember-700: #9e3016;
 
   /* Secondary: steel — interactive blue, links, focus. */
   --steel-50: #eef4fb;
