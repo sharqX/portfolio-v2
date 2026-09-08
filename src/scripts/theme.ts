@@ -13,7 +13,7 @@
 export type Theme = "light" | "dark";
 
 const STORAGE_KEY = "theme";
-const CANVAS = { light: "#fbfbfa", dark: "#191918" } as const;
+const CANVAS = { light: "#FBFCFD", dark: "#0A0E11" } as const;
 
 const darkQuery = () => window.matchMedia("(prefers-color-scheme: dark)");
 

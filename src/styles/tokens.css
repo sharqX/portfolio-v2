@@ -1,101 +1,152 @@
 /* ------------------------------------------------------------------
    Design tokens. Every colour, measure and easing used anywhere in the
    site is declared here. Components must not hardcode values.
+
+   Values track the "Sharique Design System" project on claude.ai/design
+   (slate neutrals, ember brand, steel interactive, square corners,
+   Rokkitt display / Outfit body). The semantic token *names* below are
+   the site's own and stay stable; only their values follow the system.
    ------------------------------------------------------------------ */
 
 :root {
-  /* --- Canvas & surfaces -------------------------------------------
+  /* --- System primitives ----------------------------------------- */
+
+  /* Neutral: slate — cool, blue-shifted greys. The system's ground. */
+  --slate-0: #fbfcfd;
+  --slate-50: #f4f6f8;
+  --slate-100: #e7ebef;
+  --slate-200: #d3dae1;
+  --slate-300: #b0bac5;
+  --slate-400: #8492a0;
+  --slate-500: #5e6b78;
+  --slate-600: #44505b;
+  --slate-700: #2e3841;
+  --slate-800: #1d252c;
+  --slate-900: #11171c;
+  --slate-950: #0a0e11;
+
+  /* Brand: ember — the single loud colour, used sparingly. */
+  --ember-50: #fef2ee;
+  --ember-100: #fcdfd5;
+  --ember-300: #f4917a;
+  --ember-500: #e8552f;
+  --ember-600: #c8401d;
+
+  /* Secondary: steel — interactive blue, links, focus. */
+  --steel-50: #eef4fb;
+  --steel-200: #afcaea;
+  --steel-300: #7fa8da;
+  --steel-500: #2c63ae;
+  --steel-600: #1f4c8c;
+
+  /* Semantic hues. */
+  --green-50: #eaf6f1;
+  --green-700: #0e5439;
+  --amber-50: #fdf5e6;
+  --amber-700: #7c5000;
+  --red-50: #fdeeec;
+  --red-700: #8c1c11;
+
+  /* --- Canvas & surfaces -----------------------------------------
      NOTE: --canvas is duplicated as a literal in two places that cannot
      read CSS variables — the <meta name="theme-color"> and its inline
      setter in Base.astro, and the CANVAS constant in scripts/theme.ts.
      Change all three together. */
-  --canvas: #fbfbfa;
+  --canvas: var(--slate-0);
   --surface: #ffffff;
-  --surface-sunken: #f9f9f8;
-  --surface-key: #f7f6f3;
+  --surface-sunken: var(--slate-50);
+  --surface-key: var(--slate-100);
 
-  /* --- Ink ---------------------------------------------------------- */
-  --ink: #111111;
-  --ink-muted: #787774;
-  --ink-inverse: #ffffff;
-  --ink-hover: #333333;
+  /* --- Ink ------------------------------------------------------- */
+  --ink: var(--slate-950);
+  --ink-muted: var(--slate-500);
+  --ink-inverse: var(--slate-0);
+  --ink-hover: var(--slate-700);
 
-  /* --- Structure ---------------------------------------------------- */
-  --border: #eaeaea;
-  --border-hairline: rgba(0, 0, 0, 0.06);
-  --focus-ring: rgba(17, 17, 17, 0.4);
+  /* --- Structure ----------------------------------------------- */
+  --border: var(--slate-200);
+  --border-hairline: var(--slate-100);
+  --focus-ring: var(--steel-500);
 
-  /* --- Muted pastels ------------------------------------------------ */
-  --pastel-red-bg: #fdebec;
-  --pastel-red-ink: #9f2f2d;
-  --pastel-blue-bg: #e1f3fe;
-  --pastel-blue-ink: #1f6c9f;
-  --pastel-green-bg: #edf3ec;
-  --pastel-green-ink: #346538;
-  --pastel-yellow-bg: #fbf3db;
-  --pastel-yellow-ink: #956400;
+  /* --- Accent pairs ---------------------------------------------
+     Set `data-accent` on any element to scope its pair. Mapped onto the
+     system's soft-surface / semantic-text hues (blue -> steel,
+     yellow -> amber). */
+  --pastel-red-bg: var(--red-50);
+  --pastel-red-ink: var(--red-700);
+  --pastel-blue-bg: var(--steel-50);
+  --pastel-blue-ink: var(--steel-600);
+  --pastel-green-bg: var(--green-50);
+  --pastel-green-ink: var(--green-700);
+  --pastel-yellow-bg: var(--amber-50);
+  --pastel-yellow-ink: var(--amber-700);
 
-  /* --- Typefaces ---------------------------------------------------- */
+  /* --- Typefaces ----------------------------------------------- */
   --font-sans:
-    "Geist Variable", "SF Pro Display", "Helvetica Neue", Helvetica, Arial,
-    sans-serif;
+    "Outfit Variable", "Outfit", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
   --font-serif:
-    "Newsreader Variable", "Lyon Text", "Iowan Old Style", Georgia,
-    "Times New Roman", serif;
+    "Rokkitt Variable", "Rokkitt", ui-serif, Georgia, "Times New Roman", serif;
   --font-mono:
-    "JetBrains Mono Variable", "SF Mono", ui-monospace, Menlo, Consolas,
-    monospace;
+    "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, SFMono-Regular,
+    Menlo, Consolas, monospace;
 
-  /* --- Type scale --------------------------------------------------- */
-  --text-hero: clamp(2.75rem, 6.25vw, 4rem);
-  --text-section: clamp(1.875rem, 3.5vw, 2.5rem);
-  --text-title: clamp(1.25rem, 2vw, 1.5rem);
-  --text-body: 1rem;
-  --text-small: 0.875rem;
-  --text-micro: 0.75rem;
+  /* --- Type scale ---------------------------------------------
+     System ramp is a 1.25 major third in px; kept fluid at the top end. */
+  --text-hero: clamp(2.75rem, 6vw, 5.5rem); /* -> --size-7xl 88px */
+  --text-section: clamp(1.875rem, 3.5vw, 2.625rem); /* -> --size-4xl 42px */
+  --text-title: clamp(1.125rem, 2vw, 1.3125rem); /* -> --size-xl 21px */
+  --text-body: 1rem; /* --size-md 16px */
+  --text-small: 0.875rem; /* --size-sm 14px */
+  --text-micro: 0.75rem; /* --size-2xs 12px */
 
-  --leading-tight: 1.1;
-  --leading-snug: 1.35;
-  --leading-body: 1.6;
+  --leading-tight: 1.08;
+  --leading-snug: 1.25;
+  --leading-body: 1.68;
 
-  --tracking-tight: -0.03em;
+  --tracking-tight: -0.02em; /* --tracking-display */
   --tracking-normal: 0;
-  --tracking-wide: 0.05em;
+  --tracking-wide: 0.1em; /* eyebrow / caps */
 
-  /* --- Measure & rhythm --------------------------------------------- */
-  --measure: 64rem;
-  --measure-prose: 44rem;
-  --gutter: clamp(1.25rem, 5vw, 2.5rem);
-  --section-py: clamp(6rem, 12vw, 10rem);
-  --nav-height: 4.25rem;
+  /* --- Measure & rhythm -------------------------------------- */
+  --measure: 75rem; /* --width-container 1200px */
+  --measure-prose: 68ch;
+  --gutter: clamp(1.25rem, 5vw, 2rem); /* -> --pad-page-x 32px */
+  --section-py: clamp(4rem, 10vw, 6rem); /* -> --gap-section 96px */
+  --nav-height: 4rem; /* --topbar-height 64px */
 
-  /* --- Radii -------------------------------------------------------- */
-  --radius-card: 12px;
-  --radius-panel: 8px;
-  --radius-button: 6px;
-  --radius-key: 4px;
-  --radius-pill: 9999px;
+  /* --- Radii --------------------------------------------------
+     Square is the brand. Zero is the decision, not a placeholder. */
+  --radius-card: 0;
+  --radius-panel: 0;
+  --radius-button: 0;
+  --radius-key: 0;
+  /* Even tags and chips are square in this system; genuine circles
+     (status pips) set border-radius: 50% directly, not this token. */
+  --radius-pill: 0;
 
-  /* --- Elevation ----------------------------------------------------
-     Shadow colour is tinted toward the canvas hue (a warm near-black in
-     light, plain black in dark) so a lifted card never casts a foreign
-     grey. Duplicated in both dark blocks below. */
-  --shadow-color: 28, 25, 20;
+  /* --- Elevation --------------------------------------------
+     Hairlines do most of the work; shadows are slate-tinted and shallow.
+     --shadow-color is the rgb triplet behind every shadow alpha. */
+  --shadow-color: 10, 14, 17;
   --shadow-flat: 0 0 0 rgba(var(--shadow-color), 0);
-  --shadow-lift: 0 2px 8px rgba(var(--shadow-color), 0.05);
+  --shadow-lift:
+    0 2px 6px rgba(var(--shadow-color), 0.07),
+    0 1px 2px rgba(var(--shadow-color), 0.05);
 
-  /* --- Motion ------------------------------------------------------- */
+  /* --- Motion --------------------------------------------
+     Short, linear-ish, no bounce. Precision over personality. */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --dur-reveal: 600ms;
-  --dur-hover: 200ms;
+  --dur-reveal: 420ms;
+  --dur-hover: 180ms;
   --stagger: 80ms;
 
-  /* --- Incidental chrome -------------------------------------------- */
-  --selection-bg: var(--pastel-yellow-bg);
-  --scrollbar-thumb: #dedddb;
-  --scrollbar-thumb-hover: #c9c8c5;
-  --window-dot: #e3e2e0;
-  --backdrop-line: rgba(17, 17, 17, 0.028);
+  /* --- Incidental chrome ------------------------------------- */
+  --selection-bg: var(--ember-100);
+  --scrollbar-thumb: var(--slate-200);
+  --scrollbar-thumb-hover: var(--slate-300);
+  --window-dot: var(--slate-200);
+  --backdrop-line: rgba(10, 14, 17, 0.04);
 
   /* Browser UI: form controls, scrollbars, the canvas behind the page. */
   color-scheme: light;
@@ -104,9 +155,9 @@
 /* ------------------------------------------------------------------
    Dark theme.
 
-   Same structure, inverted: a warm charcoal canvas rather than black,
-   off-white ink rather than pure white, and pastels rebuilt as
-   low-luminance tints so a tag never glows against the page.
+   The system's inverse scope (.sq-dark): a slate-950 ground, off-white
+   ink, and the pastel pairs rebuilt as low-luminance tints so a tag
+   never glows against the page.
 
    Applies when the system asks for it, unless the visitor has explicitly
    chosen light; and always when they have explicitly chosen dark.
@@ -114,78 +165,77 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --canvas: #191918;
-    --surface: #212120;
-    --surface-sunken: #1c1c1b;
-    --surface-key: #262624;
+    --canvas: var(--slate-950);
+    --surface: var(--slate-900);
+    --surface-sunken: #0f151a;
+    --surface-key: var(--slate-800);
 
-    --ink: #edece9;
-    --ink-muted: #9b9a95;
-    --ink-inverse: #191918;
-    --ink-hover: #d5d3ce;
+    --ink: #ffffff;
+    --ink-muted: var(--slate-400);
+    --ink-inverse: var(--slate-950);
+    --ink-hover: var(--slate-300);
 
-    --border: #2e2e2c;
-    --border-hairline: rgba(255, 255, 255, 0.08);
-    --focus-ring: rgba(237, 236, 233, 0.5);
+    --border: var(--slate-700);
+    --border-hairline: var(--slate-800);
+    --focus-ring: var(--steel-300);
 
-    --pastel-red-bg: #3a2422;
+    --pastel-red-bg: #35201d;
     --pastel-red-ink: #f0a9a5;
-    --pastel-blue-bg: #1e2f3b;
-    --pastel-blue-ink: #a8d4f0;
-    --pastel-green-bg: #1f2e22;
-    --pastel-green-ink: #a9d3ae;
-    --pastel-yellow-bg: #382e1c;
-    --pastel-yellow-ink: #e8c87e;
+    --pastel-blue-bg: #16283b;
+    --pastel-blue-ink: var(--steel-200);
+    --pastel-green-bg: #16281f;
+    --pastel-green-ink: #9ed5b5;
+    --pastel-yellow-bg: #322710;
+    --pastel-yellow-ink: #e6c07a;
 
     /* A hairline lift reads as nothing on a dark ground, so the shadow
-       carries more alpha than the light theme's 0.05, and drops the warm
-       tint for plain black. */
+       carries more alpha and drops the slate tint for plain black. */
     --shadow-color: 0, 0, 0;
-    --shadow-lift: 0 2px 8px rgba(var(--shadow-color), 0.36);
+    --shadow-lift: 0 2px 8px rgba(var(--shadow-color), 0.4);
 
-    --selection-bg: #3d3a2a;
-    --scrollbar-thumb: #3a3a37;
-    --scrollbar-thumb-hover: #4c4c48;
-    --window-dot: #3a3a37;
-    --backdrop-line: rgba(255, 255, 255, 0.028);
+    --selection-bg: #3a221a;
+    --scrollbar-thumb: var(--slate-700);
+    --scrollbar-thumb-hover: var(--slate-600);
+    --window-dot: var(--slate-700);
+    --backdrop-line: rgba(255, 255, 255, 0.03);
 
     color-scheme: dark;
   }
 }
 
 :root[data-theme="dark"] {
-  --canvas: #191918;
-  --surface: #212120;
-  --surface-sunken: #1c1c1b;
-  --surface-key: #262624;
+  --canvas: var(--slate-950);
+  --surface: var(--slate-900);
+  --surface-sunken: #0f151a;
+  --surface-key: var(--slate-800);
 
-  --ink: #edece9;
-  --ink-muted: #9b9a95;
-  --ink-inverse: #191918;
-  --ink-hover: #d5d3ce;
+  --ink: #ffffff;
+  --ink-muted: var(--slate-400);
+  --ink-inverse: var(--slate-950);
+  --ink-hover: var(--slate-300);
 
-  --border: #2e2e2c;
-  --border-hairline: rgba(255, 255, 255, 0.08);
-  --focus-ring: rgba(237, 236, 233, 0.5);
+  --border: var(--slate-700);
+  --border-hairline: var(--slate-800);
+  --focus-ring: var(--steel-300);
 
-  --pastel-red-bg: #3a2422;
+  --pastel-red-bg: #35201d;
   --pastel-red-ink: #f0a9a5;
-  --pastel-blue-bg: #1e2f3b;
-  --pastel-blue-ink: #a8d4f0;
-  --pastel-green-bg: #1f2e22;
-  --pastel-green-ink: #a9d3ae;
-  --pastel-yellow-bg: #382e1c;
-  --pastel-yellow-ink: #e8c87e;
+  --pastel-blue-bg: #16283b;
+  --pastel-blue-ink: var(--steel-200);
+  --pastel-green-bg: #16281f;
+  --pastel-green-ink: #9ed5b5;
+  --pastel-yellow-bg: #322710;
+  --pastel-yellow-ink: #e6c07a;
 
   /* Plain black on the dark ground; see the light :root for the rationale. */
   --shadow-color: 0, 0, 0;
-  --shadow-lift: 0 2px 8px rgba(var(--shadow-color), 0.36);
+  --shadow-lift: 0 2px 8px rgba(var(--shadow-color), 0.4);
 
-  --selection-bg: #3d3a2a;
-  --scrollbar-thumb: #3a3a37;
-  --scrollbar-thumb-hover: #4c4c48;
-  --window-dot: #3a3a37;
-  --backdrop-line: rgba(255, 255, 255, 0.028);
+  --selection-bg: #3a221a;
+  --scrollbar-thumb: var(--slate-700);
+  --scrollbar-thumb-hover: var(--slate-600);
+  --window-dot: var(--slate-700);
+  --backdrop-line: rgba(255, 255, 255, 0.03);
 
   color-scheme: dark;
 }
