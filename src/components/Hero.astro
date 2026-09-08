@@ -1,17 +1,48 @@
 ---
 import { Icon } from "astro-icon/components";
 import { site } from "../site.config";
+import work from "../content/work.json";
+import projects from "../content/projects.json";
 
-const steps = [
-  { stage: "build", command: "astro build", result: "6 pages" },
-  { stage: "image", command: "docker build --push", result: "24.1 MB" },
-  { stage: "release", command: "compose up -d on ec2", result: "healthy" },
-  {
-    stage: "verify",
-    command: "curl -sI v2.zararsharique.com",
-    result: "200 OK",
+/**
+ * Payload for the interactive terminal in the hero. It is presentation-level
+ * — a compacted view of the collections — and is serialised into a
+ * <script type="application/json"> block the client script reads.
+ */
+const terminalData = {
+  name: site.name,
+  role: "Performance Engineer",
+  email: site.email,
+  domain: site.domain,
+  resumeUrl: site.resumeViewUrl,
+  about:
+    "Performance engineer building AI-powered tools that keep teams ahead of SLA breaches — load testing, reliability engineering, and cloud-native systems built for high availability and graceful failure.",
+  work: [...work]
+    .sort((a, b) => a.order - b.order)
+    .map((entry) => ({
+      company: entry.company,
+      role: entry.role,
+      period: entry.period,
+    })),
+  projects: projects.map((project) => ({
+    title: project.title,
+    summary: project.summary,
+    url: project.url,
+  })),
+  socials: site.socials.map((social) => ({
+    label: social.label,
+    handle: social.handle,
+    href: social.href,
+  })),
+  skills: {
+    Cloud: ["AWS", "ECS Fargate", "ECR", "IAM", "ALB", "VPC"],
+    IaC: ["Terraform"],
+    Containers: ["Docker", "Kubernetes"],
+    Delivery: ["GitHub Actions", "Jenkins"],
+    Observability: ["Prometheus", "Grafana"],
+    Systems: ["Python", "C++", "Linux", "Nginx"],
   },
-];
+};
 ---
 
 <section class="hero" aria-labelledby="hero-title">
@@ -28,33 +59,33 @@ const steps = [
     }
 
     <h1 id="hero-title" class="hero__title" data-reveal style="--index: 1">
-      {site.name},<br />
-      <em>software engineer</em> working close to the infrastructure.
+      Engineering systems that stay <em>fast, reliable, and resilient</em> at scale.
     </h1>
 
     <div class="hero__grid">
       <div class="hero__copy">
         <p class="hero__lede" data-reveal style="--index: 2">
-          I build and run the systems software ships on — AWS, Terraform,
-          Kubernetes, and the pipelines between them. Most of the work is making
-          deployments unremarkable: reproducible to build, quick to observe, and
-          cheap to roll back.
+          I'm a performance engineer who builds AI-powered tools to help teams
+          stay ahead of SLA breaches. My work spans load testing and reliability
+          engineering to designing cloud-native systems built for high
+          availability and fault tolerance. I care about good monitoring, fast
+          feedback loops, and infrastructure that fails gracefully.
         </p>
 
         <div class="hero__actions" data-reveal style="--index: 3">
           <a
             class="btn btn--primary"
-            href={site.resumeUrl}
+            href={site.resumeViewUrl}
             rel="noopener noreferrer"
             target="_blank"
           >
             <Icon
               aria-hidden="true"
-              name="ph:download-simple-bold"
+              name="ph:file-text-bold"
               width="16"
               height="16"
             />
-            Download résumé
+            My Resume
           </a>
           <a class="btn btn--ghost" href="/blog">
             Read the writing
@@ -112,37 +143,585 @@ const steps = [
           <span class="window__dots" aria-hidden="true">
             <i></i><i></i><i></i>
           </span>
-          <span class="window__title">deploy.yml — v2.zararsharique.com</span>
+          <span class="window__title">sharique@{site.domain} — zsh</span>
         </div>
-        <div class="window__body">
-          <ul class="steps">
-            {
-              steps.map((step) => (
-                <li class="step">
-                  <Icon
-                    aria-hidden="true"
-                    class="step__tick"
-                    name="ph:check-bold"
-                    width="13"
-                    height="13"
-                  />
-                  <span class="step__stage">{step.stage}</span>
-                  <span class="step__command">{step.command}</span>
-                  <span class="step__result">{step.result}</span>
-                </li>
-              ))
-            }
-          </ul>
-          <p class="window__note">
-            This site is built, imaged and released by the pipeline described in <a
-              href="/blog">the writing</a
-            >.
-          </p>
+        <div class="terminal" data-terminal>
+          <div
+            class="terminal__output"
+            data-terminal-output
+            role="log"
+            aria-live="polite"
+            aria-label="Terminal output"
+          >
+          </div>
+          <form class="terminal__form" data-terminal-form>
+            <span class="terminal__prompt" aria-hidden="true">➜ ~</span>
+            <span class="terminal__field">
+              <span
+                class="terminal__render"
+                data-terminal-render
+                aria-hidden="true"></span>
+              <input
+                class="terminal__input"
+                id="terminal-input"
+                type="text"
+                autocomplete="off"
+                autocapitalize="off"
+                autocorrect="off"
+                spellcheck="false"
+                aria-label="Terminal input — type help and press Enter"
+              />
+            </span>
+          </form>
+          <noscript>
+            <p class="terminal__noscript">
+              This terminal needs JavaScript. The links above cover the same
+              ground.
+            </p>
+          </noscript>
         </div>
+        <script
+          is:inline
+          type="application/json"
+          data-terminal-data
+          set:html={JSON.stringify(terminalData)}
+        />
       </div>
     </div>
   </div>
 </section>
+
+<script>
+  type Social = { label: string; handle: string; href: string };
+  type Project = { title: string; summary: string; url: string };
+  type Job = { company: string; role: string; period: string };
+
+  interface TerminalData {
+    name: string;
+    role: string;
+    email: string;
+    domain: string;
+    resumeUrl: string;
+    about: string;
+    work: Job[];
+    projects: Project[];
+    socials: Social[];
+    skills: Record<string, string[]>;
+  }
+
+  const root = document.querySelector<HTMLElement>("[data-terminal]");
+  const output = document.querySelector<HTMLElement>("[data-terminal-output]");
+  const form = document.querySelector<HTMLFormElement>("[data-terminal-form]");
+  const input = document.querySelector<HTMLInputElement>("#terminal-input");
+  const render = document.querySelector<HTMLElement>("[data-terminal-render]");
+  const dataEl = document.querySelector<HTMLScriptElement>(
+    "[data-terminal-data]",
+  );
+
+  if (root && output && form && input && render && dataEl) {
+    const data = JSON.parse(dataEl.textContent ?? "{}") as TerminalData;
+
+    const HISTORY_KEY = "terminal-history";
+    const loadHistory = (): string[] => {
+      try {
+        const raw = JSON.parse(localStorage.getItem(HISTORY_KEY) ?? "[]");
+        return Array.isArray(raw)
+          ? raw.filter((x): x is string => typeof x === "string").slice(0, 50)
+          : [];
+      } catch {
+        return [];
+      }
+    };
+    const saveHistory = () => {
+      try {
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(past.slice(0, 50)));
+      } catch {
+        /* Site data blocked — history lasts this page view only. */
+      }
+    };
+
+    const past: string[] = loadHistory();
+    let cursor = -1;
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    // Placeholder hint on the prompt line: types itself out on load, then
+    // gets chewed back up from the caret when the visitor starts typing.
+    const HINT_TEXT = "Type 'help' for commands.";
+    let hintChars = 0;
+    let hintPhase: "typing" | "done" | "deleting" | "gone" = "typing";
+    let hintTimer: number | undefined;
+
+    // Resize the panel to fit its content, between the CSS min/max. Height
+    // is pinned to its current value and then set to the target so the CSS
+    // `transition` animates the grow/shrink.
+    const fitHeight = () => {
+      const cs = getComputedStyle(root);
+      const min = parseFloat(cs.minHeight) || 0;
+      const max = parseFloat(cs.maxHeight) || Number.MAX_SAFE_INTEGER;
+      const from = root.getBoundingClientRect().height;
+      root.style.height = "auto";
+      const target = Math.min(max, Math.max(min, root.scrollHeight));
+      root.style.height = `${from}px`;
+      void root.offsetHeight;
+      root.style.height = `${target}px`;
+    };
+
+    const scrollToEnd = () => {
+      fitHeight();
+      root.scrollTop = root.scrollHeight;
+    };
+
+    const line = (text = "", cls?: string) => {
+      const el = document.createElement("div");
+      el.className = cls ? `terminal__line ${cls}` : "terminal__line";
+      el.textContent = text;
+      output.appendChild(el);
+    };
+
+    const blank = () => line("");
+
+    const linkLine = (label: string, href: string) => {
+      const el = document.createElement("div");
+      el.className = "terminal__line";
+      const a = document.createElement("a");
+      a.href = href;
+      a.textContent = label;
+      a.className = "terminal__link";
+      if (!href.startsWith("mailto:")) {
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+      }
+      el.appendChild(a);
+      output.appendChild(el);
+    };
+
+    const printEcho = (text: string) => {
+      const el = document.createElement("div");
+      el.className = "terminal__line terminal__echo";
+      const prompt = document.createElement("span");
+      prompt.className = "terminal__prompt";
+      prompt.textContent = "➜ ~";
+      el.append(prompt, document.createTextNode(` ${text}`));
+      output.appendChild(el);
+    };
+
+    const wrap = (text: string, width = 46): string[] => {
+      const lines: string[] = [];
+      let cur = "";
+      for (const word of text.split(/\s+/)) {
+        if (cur && (cur + " " + word).length > width) {
+          lines.push(cur);
+          cur = word;
+        } else {
+          cur = cur ? `${cur} ${word}` : word;
+        }
+      }
+      if (cur) lines.push(cur);
+      return lines;
+    };
+
+    const distance = (a: string, b: string): number => {
+      const grid = Array.from({ length: a.length + 1 }, (_, i) => {
+        const row = new Array<number>(b.length + 1).fill(0);
+        row[0] = i;
+        return row;
+      });
+      for (let j = 0; j <= b.length; j += 1) grid[0][j] = j;
+      for (let i = 1; i <= a.length; i += 1) {
+        for (let j = 1; j <= b.length; j += 1) {
+          grid[i][j] = Math.min(
+            grid[i - 1][j] + 1,
+            grid[i][j - 1] + 1,
+            grid[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1),
+          );
+        }
+      }
+      return grid[a.length][b.length];
+    };
+
+    const commonPrefix = (items: string[]): string => {
+      if (items.length === 0) return "";
+      let prefix = items[0];
+      for (const item of items) {
+        while (!item.startsWith(prefix)) prefix = prefix.slice(0, -1);
+      }
+      return prefix;
+    };
+
+    const commands: Record<
+      string,
+      { desc: string; run: (args: string[]) => void }
+    > = {
+      help: {
+        desc: "list available commands",
+        run: () => {
+          line("Available commands", "terminal__line--head");
+          for (const [name, cmd] of Object.entries(commands)) {
+            line(`  ${name.padEnd(10)}${cmd.desc}`);
+          }
+          blank();
+          line(
+            "↑ ↓ history · Tab complete · → accept · Ctrl+C cancel",
+            "terminal__line--dim",
+          );
+        },
+      },
+      whoami: {
+        desc: "who is this",
+        run: () => {
+          line(data.name, "terminal__line--head");
+          line(data.role, "terminal__line--dim");
+        },
+      },
+      about: {
+        desc: "the short version",
+        run: () => wrap(data.about).forEach((l) => line(l)),
+      },
+      work: {
+        desc: "where I've worked",
+        run: () => {
+          data.work.forEach((job, i) => {
+            if (i) blank();
+            line(job.role, "terminal__line--head");
+            line(`${job.company} · ${job.period}`, "terminal__line--dim");
+          });
+        },
+      },
+      projects: {
+        desc: "things I've built",
+        run: () => {
+          data.projects.forEach((project, i) => {
+            if (i) blank();
+            line(project.title, "terminal__line--head");
+            wrap(project.summary).forEach((l) =>
+              line(l, "terminal__line--dim"),
+            );
+            linkLine(project.url.replace(/^https?:\/\//, ""), project.url);
+          });
+        },
+      },
+      skills: {
+        desc: "the stack",
+        run: () => {
+          for (const [group, items] of Object.entries(data.skills)) {
+            line(`${group.padEnd(14)}${items.join(", ")}`);
+          }
+        },
+      },
+      socials: {
+        desc: "find me elsewhere",
+        run: () => {
+          data.socials.forEach((s) =>
+            linkLine(`${s.label.padEnd(10)} ${s.handle}`, s.href),
+          );
+        },
+      },
+      resume: {
+        desc: "open the résumé (PDF)",
+        run: () => {
+          line("Opening résumé in a new tab…", "terminal__line--dim");
+          window.open(data.resumeUrl, "_blank", "noopener");
+        },
+      },
+      email: {
+        desc: "how to reach me",
+        run: () => linkLine(data.email, `mailto:${data.email}`),
+      },
+      theme: {
+        desc: "toggle light / dark",
+        run: (args) => {
+          const html = document.documentElement;
+          const current =
+            html.getAttribute("data-theme") ||
+            (window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light");
+          const wanted =
+            args[0] === "light" || args[0] === "dark"
+              ? args[0]
+              : current === "dark"
+                ? "light"
+                : "dark";
+          const toggle = document.querySelector<HTMLButtonElement>(
+            "[data-theme-toggle]",
+          );
+          if (wanted !== current && toggle) toggle.click();
+          line(`theme → ${wanted}`, "terminal__line--dim");
+        },
+      },
+      history: {
+        desc: "recent commands",
+        run: () => {
+          if (past.length === 0) {
+            line("no history yet", "terminal__line--dim");
+            return;
+          }
+          past
+            .slice(0, 12)
+            .reverse()
+            .forEach((cmd, i) =>
+              line(`  ${String(i + 1).padStart(2)}  ${cmd}`),
+            );
+        },
+      },
+      echo: {
+        desc: "print a line of text",
+        run: (args) => line(args.join(" ")),
+      },
+      date: {
+        desc: "what time is it",
+        run: () => line(new Date().toString()),
+      },
+      clear: {
+        desc: "wipe the screen",
+        run: () => {
+          output.replaceChildren();
+          fitHeight();
+        },
+      },
+    };
+
+    // Unlisted, for the curious.
+    const hidden: Record<string, () => void> = {
+      ls: () => line("about  work  projects  skills  socials  resume"),
+      pwd: () => line(`/home/sharique/${data.domain}`),
+      sudo: () => line("nice try.", "terminal__line--dim"),
+      exit: () => line("there is no exit. type 'help'.", "terminal__line--dim"),
+    };
+
+    /* --- Inline autocomplete + block cursor ----------------------- */
+
+    const ghostFor = (value: string): string => {
+      const frag = value.toLowerCase();
+      if (!frag || value.includes(" ") || value !== value.trimStart())
+        return "";
+      const matches = Object.keys(commands).filter(
+        (name) => name.startsWith(frag) && name !== frag,
+      );
+      return matches.length === 1 ? matches[0].slice(value.length) : "";
+    };
+
+    const atEnd = () =>
+      input.selectionStart === input.value.length &&
+      input.selectionEnd === input.value.length;
+
+    const renderLine = () => {
+      const value = input.value;
+
+      if (value !== "" && (hintPhase === "typing" || hintPhase === "done")) {
+        dismissHint();
+      }
+
+      const showBlock = atEnd();
+      form.classList.toggle("is-end", showBlock);
+      render.replaceChildren();
+
+      if (showBlock) {
+        const mirror = document.createElement("span");
+        mirror.className = "terminal__mirror";
+        mirror.textContent = value;
+
+        const caret = document.createElement("span");
+        caret.className = "terminal__caret";
+        render.append(mirror, caret);
+
+        if (
+          hintPhase === "deleting" ||
+          (hintPhase !== "gone" && value === "")
+        ) {
+          const hintEl = document.createElement("span");
+          hintEl.className = "terminal__hint";
+          hintEl.textContent =
+            hintPhase === "deleting"
+              ? HINT_TEXT.slice(HINT_TEXT.length - hintChars)
+              : HINT_TEXT.slice(0, hintChars);
+          render.appendChild(hintEl);
+        } else {
+          const ghost = ghostFor(value);
+          if (ghost) {
+            const ghostEl = document.createElement("span");
+            ghostEl.className = "terminal__ghost";
+            ghostEl.textContent = ghost;
+            render.appendChild(ghostEl);
+          }
+        }
+      }
+      render.style.transform = `translateX(${-input.scrollLeft}px)`;
+    };
+
+    const typeHint = () => {
+      if (hintPhase !== "typing") return;
+      if (hintChars >= HINT_TEXT.length) {
+        hintPhase = "done";
+        return;
+      }
+      hintChars += 1;
+      renderLine();
+      hintTimer = window.setTimeout(typeHint, 40 + Math.random() * 34);
+    };
+
+    const startHint = () => {
+      if (input.value !== "") {
+        hintPhase = "gone";
+        return;
+      }
+      if (reduceMotion) {
+        hintChars = HINT_TEXT.length;
+        hintPhase = "done";
+        renderLine();
+        return;
+      }
+      hintTimer = window.setTimeout(typeHint, 260);
+    };
+
+    function dismissHint() {
+      if (hintPhase === "gone" || hintPhase === "deleting") return;
+      window.clearTimeout(hintTimer);
+      if (reduceMotion) {
+        hintPhase = "gone";
+        hintChars = 0;
+        renderLine();
+        return;
+      }
+      hintPhase = "deleting";
+      hintChars = HINT_TEXT.length;
+      const eat = () => {
+        if (hintChars <= 0) {
+          hintPhase = "gone";
+          renderLine();
+          return;
+        }
+        hintChars -= 1;
+        renderLine();
+        hintTimer = window.setTimeout(eat, 16);
+      };
+      eat();
+    }
+
+    /* --- Command execution -------------------------------------- */
+
+    function runCommand(raw: string) {
+      const value = raw.trim();
+      printEcho(value);
+
+      if (value) {
+        past.unshift(value);
+        past.length = Math.min(past.length, 50);
+        cursor = -1;
+        saveHistory();
+      }
+
+      const [name, ...args] = value.split(/\s+/);
+      if (name) {
+        if (name in commands) {
+          commands[name].run(args);
+        } else if (name in hidden) {
+          hidden[name]();
+        } else {
+          line(`command not found: ${name}`, "terminal__line--err");
+          const names = [...Object.keys(commands), ...Object.keys(hidden)];
+          const nearest = names
+            .map((c) => [c, distance(name.toLowerCase(), c)] as const)
+            .sort((a, b) => a[1] - b[1])[0];
+          line(
+            nearest && nearest[1] <= 2
+              ? `did you mean '${nearest[0]}'?`
+              : "type 'help' for the list",
+            "terminal__line--dim",
+          );
+        }
+      }
+      scrollToEnd();
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      runCommand(input.value);
+      input.value = "";
+      renderLine();
+    });
+
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+        if (cursor < past.length - 1) cursor += 1;
+        input.value = past[cursor] ?? "";
+        input.setSelectionRange(input.value.length, input.value.length);
+        renderLine();
+      } else if (event.key === "ArrowDown") {
+        event.preventDefault();
+        if (cursor > 0) {
+          cursor -= 1;
+          input.value = past[cursor] ?? "";
+        } else {
+          cursor = -1;
+          input.value = "";
+        }
+        renderLine();
+      } else if (event.key === "ArrowRight") {
+        if (atEnd()) {
+          const ghost = ghostFor(input.value);
+          if (ghost) {
+            event.preventDefault();
+            input.value += ghost;
+            renderLine();
+          }
+        }
+      } else if (event.key === "Tab") {
+        event.preventDefault();
+        const frag = input.value.toLowerCase();
+        if (!frag || input.value.includes(" ")) return;
+        const matches = Object.keys(commands).filter((c) => c.startsWith(frag));
+        if (matches.length === 1) {
+          input.value = matches[0];
+        } else if (matches.length > 1) {
+          const shared = commonPrefix(matches);
+          if (shared.length > frag.length) input.value = shared;
+          else line(matches.join("   "), "terminal__line--dim");
+        }
+        renderLine();
+        scrollToEnd();
+      } else if (event.ctrlKey && (event.key === "c" || event.key === "C")) {
+        if (window.getSelection()?.toString()) return;
+        event.preventDefault();
+        printEcho(`${input.value}^C`);
+        input.value = "";
+        cursor = -1;
+        renderLine();
+        scrollToEnd();
+      } else if (event.ctrlKey && (event.key === "l" || event.key === "L")) {
+        event.preventDefault();
+        output.replaceChildren();
+        fitHeight();
+      }
+    });
+
+    for (const evt of ["input", "keyup", "click", "focus", "blur"]) {
+      input.addEventListener(evt, renderLine);
+    }
+    input.addEventListener("scroll", () => {
+      render.style.transform = `translateX(${-input.scrollLeft}px)`;
+    });
+
+    // Click anywhere in the terminal to focus the prompt, but keep text
+    // selection and link/chip clicks working.
+    root.addEventListener("click", (event) => {
+      const target = event.target as HTMLElement;
+      if (target.closest("a")) return;
+      if (window.getSelection()?.toString()) return;
+      input.focus();
+    });
+
+    renderLine();
+    startHint();
+    // Pin an explicit height up front so appended output can't auto-resize
+    // the panel before fitHeight() gets to animate the grow.
+    fitHeight();
+  }
+</script>
 
 <style>
   .hero {
@@ -154,7 +733,7 @@ const steps = [
     grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
     gap: clamp(2.5rem, 5vw, 4.5rem);
     align-items: start;
-    margin-block-start: clamp(2.5rem, 5vw, 4rem);
+    margin-block-start: clamp(1.5rem, 3vw, 2.25rem);
   }
 
   .hero__badge {
@@ -183,6 +762,8 @@ const steps = [
     max-width: 52ch;
     color: var(--ink-muted);
     font-size: 1.0625rem;
+    text-align: justify;
+    hyphens: auto;
   }
 
   .hero__actions {
@@ -260,75 +841,174 @@ const steps = [
     color: var(--ink-muted);
   }
 
-  .window__body {
-    padding: 1.5rem 1.25rem 1.25rem;
-    background: var(--surface-sunken);
-  }
-
-  .steps {
-    list-style: none;
-    padding: 0;
-    display: grid;
-    gap: 0.65rem;
-  }
-
-  .step {
-    display: grid;
-    grid-template-columns: auto 4.5rem minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 0.65rem;
-    font-family: var(--font-mono);
-    font-size: var(--text-micro);
-  }
-
-  .step__tick {
-    color: var(--pastel-green-ink);
-  }
-
-  .step__stage {
-    color: var(--ink);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-  }
-
-  .step__command {
-    color: var(--ink-muted);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .step__result {
-    color: var(--ink);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .window__note {
-    margin-block-start: 1.5rem;
-    padding-block-start: 1rem;
-    border-top: 1px solid var(--border);
-    font-size: var(--text-micro);
-    line-height: 1.5;
-    color: var(--ink-muted);
-  }
-
   @media (max-width: 900px) {
     .hero__grid {
       grid-template-columns: minmax(0, 1fr);
     }
+  }
+</style>
 
-    .step {
-      grid-template-columns: auto 4.5rem minmax(0, 1fr) auto;
+<!--
+  The terminal's contents are built at runtime by the script above. Astro
+  scopes component <style> to elements present in the template, so those
+  runtime-created nodes would never match a scoped rule — the terminal
+  styles have to be global.
+-->
+<style is:global>
+  .terminal {
+    /* Starts compact and grows with its content up to the full height,
+       then scrolls. The explicit height is set from JS after each command;
+       height is a deliberate exception to the transform/opacity-only rule
+       so the grow/shrink can animate. */
+    --terminal-height: clamp(300px, 42vh, 384px);
+    min-height: calc(var(--terminal-height) * 0.7);
+    max-height: var(--terminal-height);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 1rem 1.1rem 1.1rem;
+    background: var(--surface-sunken);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.65;
+    cursor: text;
+    transition: height 260ms var(--ease-out-expo);
+  }
+
+  .terminal__output {
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: var(--ink);
+  }
+
+  .terminal__line {
+    min-height: 1.65em;
+  }
+
+  .terminal__line--head {
+    color: var(--ink);
+  }
+
+  .terminal__line--dim {
+    color: var(--ink-muted);
+  }
+
+  .terminal__line--err {
+    color: var(--pastel-red-ink);
+  }
+
+  .terminal__echo {
+    margin-block-start: 0.4rem;
+    color: var(--ink-muted);
+  }
+
+  .terminal__prompt {
+    color: var(--pastel-green-ink);
+    user-select: none;
+  }
+
+  .terminal__link {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+    text-underline-offset: 2px;
+  }
+
+  .terminal__link:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .terminal__form {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-block-start: 0.4rem;
+  }
+
+  .terminal__form .terminal__prompt {
+    flex: none;
+  }
+
+  .terminal__field {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .terminal__render {
+    position: absolute;
+    inset: 0;
+    white-space: pre;
+    pointer-events: none;
+    color: transparent;
+  }
+
+  .terminal__mirror {
+    visibility: hidden;
+  }
+
+  .terminal__ghost {
+    color: var(--ink-muted);
+    opacity: 0.5;
+  }
+
+  .terminal__hint {
+    color: var(--ink-muted);
+    opacity: 0.5;
+    user-select: none;
+  }
+
+  .terminal__caret {
+    display: inline-block;
+    width: 1ch;
+    height: 1.05em;
+    vertical-align: -0.2em;
+    background: var(--pastel-green-ink);
+    animation: terminal-caret 1s step-end infinite;
+  }
+
+  @keyframes terminal-caret {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
     }
   }
 
-  @media (max-width: 480px) {
-    .step__command {
-      display: none;
+  @media (prefers-reduced-motion: reduce) {
+    .terminal__caret {
+      animation: none;
     }
 
-    .step {
-      grid-template-columns: auto 1fr auto;
+    .terminal {
+      transition: none;
     }
+  }
+
+  .terminal__input {
+    position: relative;
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    caret-color: transparent;
+  }
+
+  .terminal__form:not(.is-end) .terminal__input {
+    caret-color: var(--pastel-green-ink);
+  }
+
+  .terminal__input:focus {
+    outline: none;
+  }
+
+  .terminal__noscript {
+    color: var(--ink-muted);
   }
 </style>
