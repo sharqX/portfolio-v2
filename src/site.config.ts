@@ -21,9 +21,9 @@ export const site = {
   email: "rsharique24@gmail.com",
 
   resumeUrl:
-    "https://drive.usercontent.google.com/u/0/uc?id=1UqFOdEFIHScARIcsqwLKAjTzreWLcXJG&export=download",
+    "https://drive.usercontent.google.com/u/0/uc?id=1RqT5WxpXJJY3qrGvEeyV0HqeZ6PtV6VR&export=download",
   resumeViewUrl:
-    "https://drive.google.com/file/d/1UqFOdEFIHScARIcsqwLKAjTzreWLcXJG/view",
+    "https://drive.google.com/file/d/1RqT5WxpXJJY3qrGvEeyV0HqeZ6PtV6VR/view",
 
   /* Flip `open` to false to hide the availability badge in the hero. */
   availability: {
