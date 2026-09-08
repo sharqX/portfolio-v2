@@ -1,7 +1,7 @@
 ---
-import '@fontsource-variable/geist';
-import '@fontsource-variable/newsreader';
-import '@fontsource-variable/newsreader/wght-italic.css';
+import '@fontsource-variable/outfit';
+import '@fontsource-variable/rokkitt';
+import '@fontsource-variable/rokkitt/wght-italic.css';
 import '@fontsource-variable/jetbrains-mono';
 import '../styles/tokens.css';
 import '../styles/base.css';
@@ -62,7 +62,7 @@ const analytics = import.meta.env.PROD ? site.analyticsId : null;
     <meta name="twitter:image" content={ogImage} />
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <meta name="theme-color" content="#fbfbfa" />
+    <meta name="theme-color" content="#FBFCFD" />
     <meta
       name="color-scheme"
       content="light dark"
@@ -87,7 +87,7 @@ const analytics = import.meta.env.PROD ? site.analyticsId : null;
           document.documentElement.setAttribute('data-theme', stored);
           document
             .querySelector('meta[name="theme-color"]')
-            .setAttribute('content', stored === 'dark' ? '#191918' : '#fbfbfa');
+            .setAttribute('content', stored === 'dark' ? '#0A0E11' : '#FBFCFD');
         }
       } catch (error) {
         /* Site data blocked; the system theme still applies. */
