@@ -217,15 +217,16 @@ a:hover {
   background: var(--surface-key);
 }
 
-/* Link variant: a text action, steel at rest, ember on hover. */
+/* A white rectangle action; steel text at rest, ember on hover. */
 .btn--link {
-  padding: 0;
-  border-color: transparent;
-  background: transparent;
+  background: var(--slate-0);
+  border-color: var(--slate-0);
   color: var(--steel-600);
 }
 
 .btn--link:hover {
+  background: var(--slate-100);
+  border-color: var(--slate-100);
   color: var(--ember-600);
 }
 

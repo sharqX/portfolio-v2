@@ -726,7 +726,6 @@ const terminalData = {
 <style>
   .hero {
     padding-block: clamp(4rem, 9vw, 7.5rem) var(--section-py);
-    border-block-end: 1px solid var(--border);
   }
 
   .hero__grid {
@@ -751,12 +750,54 @@ const terminalData = {
 
   .hero__title {
     font-size: var(--text-hero);
-    text-wrap: balance;
+    text-wrap: pretty;
   }
 
   .hero__title em {
     font-style: italic;
     color: var(--ink-muted);
+  }
+
+  /* A white highlight fades in and sweeps once through the italic phrase,
+     first letter to last, in step with the title's reveal — the light
+     lives inside the glyphs via background-clip: text. */
+  @supports (background-clip: text) or (-webkit-background-clip: text) {
+    .hero__title em {
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      background-image: linear-gradient(
+        95deg,
+        var(--ink-muted) 41%,
+        var(--slate-0) 49%,
+        var(--slate-0) 51%,
+        var(--ink-muted) 59%
+      );
+      background-size: 300% 100%;
+      background-repeat: no-repeat;
+      background-position: 0% 0;
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    .hero__title.is-visible em {
+      animation: hero-ink-sweep 1400ms ease-out
+        calc(var(--index, 0) * var(--stagger) + 300ms) forwards;
+    }
+  }
+
+  @keyframes hero-ink-sweep {
+    0% {
+      background-position: 90% 0;
+    }
+    100% {
+      background-position: 5% 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__title.is-visible em {
+      animation: none;
+    }
   }
 
   .hero__lede {
