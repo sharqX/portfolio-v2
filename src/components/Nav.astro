@@ -4,6 +4,9 @@ import { site } from "../site.config";
 
 const path = Astro.url.pathname;
 const onBlog = path.startsWith("/blog");
+
+const isCurrent = (href: string) =>
+  href.startsWith("/") && !href.includes("#") && path.startsWith(href);
 ---
 
 <header class="nav">
@@ -20,7 +23,15 @@ const onBlog = path.startsWith("/blog");
     <nav class="nav__links" aria-label="Primary">
       {
         site.nav.map((item) => (
-          <a class="nav__link link-plain" href={item.href}>
+          <a
+            class:list={[
+              "nav__link",
+              "link-plain",
+              item.always && "nav__link--always",
+            ]}
+            href={item.href}
+            aria-current={isCurrent(item.href) ? "page" : undefined}
+          >
             {item.label}
           </a>
         ))
@@ -41,6 +52,7 @@ const onBlog = path.startsWith("/blog");
         title="Switch theme"
       >
         <Icon
+          is:inline
           aria-hidden="true"
           class="theme-icon theme-icon--moon"
           name="ph:moon-bold"
@@ -48,6 +60,7 @@ const onBlog = path.startsWith("/blog");
           height="16"
         />
         <Icon
+          is:inline
           aria-hidden="true"
           class="theme-icon theme-icon--sun"
           name="ph:sun-bold"
@@ -65,6 +78,7 @@ const onBlog = path.startsWith("/blog");
         title="Download résumé"
       >
         <Icon
+          is:inline
           aria-hidden="true"
           name="ph:download-simple-bold"
           width="16"

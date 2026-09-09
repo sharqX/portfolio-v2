@@ -7,30 +7,28 @@ import Tag from "../components/Tag.astro";
 import "../styles/prose.css";
 
 interface Props {
-  post: CollectionEntry<"blog">;
-  readingMinutes: number;
-  prev: CollectionEntry<"blog"> | null;
-  next: CollectionEntry<"blog"> | null;
+  project: CollectionEntry<"projects">;
+  prev: CollectionEntry<"projects"> | null;
+  next: CollectionEntry<"projects"> | null;
 }
 
-const { post, readingMinutes, prev, next } = Astro.props;
+const { project, prev, next } = Astro.props;
 
 const formatter = new Intl.DateTimeFormat("en-GB", {
-  day: "2-digit",
   month: "long",
   year: "numeric",
 });
 ---
 
 <Base
-  title={post.data.title}
-  description={post.data.summary}
+  title={project.data.title}
+  description={project.data.summary}
   type="article"
-  publishedTime={post.data.date}
+  publishedTime={project.data.date}
 >
   <article class="section post">
     <div class="container">
-      <a class="post__back link-plain" href="/blog">
+      <a class="post__back link-plain" href="/projects">
         <Icon
           is:inline
           aria-hidden="true"
@@ -38,24 +36,36 @@ const formatter = new Intl.DateTimeFormat("en-GB", {
           width="14"
           height="14"
         />
-        All posts
+        All projects
       </a>
 
       <header class="post__head" data-reveal>
         <p class="mono post__meta">
-          <time datetime={post.data.date.toISOString()}>
-            {formatter.format(post.data.date)}
+          <time datetime={project.data.date.toISOString()}>
+            {formatter.format(project.data.date)}
           </time>
-          <span aria-hidden="true">/</span>
-          <span>{readingMinutes} min read</span>
+          {
+            project.data.url && (
+              <>
+                <span aria-hidden="true">/</span>
+                <a
+                  href={project.data.url}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Full write-up
+                </a>
+              </>
+            )
+          }
         </p>
-        <h1 class="post__title">{post.data.title}</h1>
-        <p class="post__summary">{post.data.summary}</p>
+        <h1 class="post__title">{project.data.title}</h1>
+        <p class="post__summary">{project.data.summary}</p>
         {
-          post.data.tags.length > 0 && (
+          project.data.tags.length > 0 && (
             <div class="tag-row post__tags">
-              {post.data.tags.map((tag) => (
-                <Tag accent={post.data.accent}>{tag}</Tag>
+              {project.data.tags.map((tag) => (
+                <Tag accent={project.data.accent}>{tag}</Tag>
               ))}
             </div>
           )
@@ -69,12 +79,34 @@ const formatter = new Intl.DateTimeFormat("en-GB", {
       </div>
 
       {
+        project.data.url && (
+          <p class="project__writeup" data-reveal>
+            <a
+              class="btn btn--ghost"
+              href={project.data.url}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Read the full write-up
+              <Icon
+                is:inline
+                aria-hidden="true"
+                name="ph:arrow-up-right-bold"
+                width="16"
+                height="16"
+              />
+            </a>
+          </p>
+        )
+      }
+
+      {
         (prev || next) && (
-          <nav class="post__nav" aria-label="More posts">
+          <nav class="post__nav" aria-label="More projects">
             {next ? (
               <a
                 class="post__nav-link card link-plain"
-                href={`/blog/${next.id}`}
+                href={`/projects/${next.id}`}
               >
                 <span class="mono post__nav-label">Newer</span>
                 <span class="post__nav-title">{next.data.title}</span>
@@ -85,7 +117,7 @@ const formatter = new Intl.DateTimeFormat("en-GB", {
             {prev && (
               <a
                 class="post__nav-link card link-plain post__nav-link--end"
-                href={`/blog/${prev.id}`}
+                href={`/projects/${prev.id}`}
               >
                 <span class="mono post__nav-label">Older</span>
                 <span class="post__nav-title">{prev.data.title}</span>
@@ -152,6 +184,11 @@ const formatter = new Intl.DateTimeFormat("en-GB", {
   .post__rule {
     max-width: var(--measure-prose);
     margin-block: clamp(2.5rem, 5vw, 3.5rem);
+  }
+
+  .project__writeup {
+    max-width: var(--measure-prose);
+    margin-block-start: clamp(2.5rem, 5vw, 3.5rem);
   }
 
   .post__nav {

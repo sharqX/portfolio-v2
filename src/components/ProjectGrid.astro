@@ -4,7 +4,7 @@ import type { CollectionEntry } from "astro:content";
 import Tag from "./Tag.astro";
 
 /**
- * Each project sets its own `accent` in projects.json as a stable identity
+ * Each project sets its own `accent` in its frontmatter as a stable identity
  * colour — one distinct pastel per card, never repeated. Keep it that way:
  * if a fifth project can't take an unused pastel, it goes neutral rather
  * than doubling up a hue.
@@ -31,9 +31,7 @@ const formatter = new Intl.DateTimeFormat("en-GB", {
           "link-plain",
           project.data.featured && "bento__card--wide",
         ]}
-        href={project.data.url}
-        rel="noopener noreferrer"
-        target="_blank"
+        href={`/projects/${project.id}`}
         data-accent={project.data.accent}
         data-reveal
         style={`--index: ${i}`}
@@ -48,9 +46,10 @@ const formatter = new Intl.DateTimeFormat("en-GB", {
             ))}
           </div>
           <Icon
+            is:inline
             aria-hidden="true"
             class="bento__arrow"
-            name="ph:arrow-up-right-bold"
+            name="ph:arrow-right-bold"
             width="16"
             height="16"
           />
@@ -120,7 +119,7 @@ const formatter = new Intl.DateTimeFormat("en-GB", {
   }
 
   .bento__card:hover .bento__arrow {
-    transform: translate(2px, -2px);
+    transform: translateX(3px);
     color: var(--ember-500);
   }
 

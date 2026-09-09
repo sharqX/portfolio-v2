@@ -217,17 +217,15 @@ a:hover {
   background: var(--surface-key);
 }
 
-/* A white rectangle action; steel text at rest, ember on hover. */
+/* Bordered surface action, matched to the hero social buttons. */
 .btn--link {
-  background: var(--slate-0);
-  border-color: var(--slate-0);
-  color: var(--steel-600);
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--ink);
 }
 
 .btn--link:hover {
-  background: var(--slate-100);
-  border-color: var(--slate-100);
-  color: var(--ember-600);
+  background: var(--surface-key);
 }
 
 /* --- Tags ---------------------------------------------------------- */

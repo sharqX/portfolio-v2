@@ -49,7 +49,13 @@ const groups = [
     groups.map((group, i) => (
       <div class="toolbox__cell" data-reveal style={`--index: ${i}`}>
         <p class="toolbox__label">
-          <Icon aria-hidden="true" name={group.icon} width="15" height="15" />
+          <Icon
+            is:inline
+            aria-hidden="true"
+            name={group.icon}
+            width="15"
+            height="15"
+          />
           {group.label}
         </p>
         <div class="tag-row">

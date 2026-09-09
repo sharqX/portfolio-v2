@@ -18,11 +18,11 @@ Page content lives in data files, not `.astro` templates:
 
 - `src/site.config.ts` — name, socials, résumé URLs, availability badge, `analyticsId`
 - `src/content/work.json` — timeline entries; `"period": ""` hides the date range until filled in
-- `src/content/projects.json` — project cards
+- `src/content/projects/<slug>.md` — project write-ups; the filename is the URL slug (`/projects/<slug>`). Frontmatter carries the card fields (`title`, `summary`, `tags`, `accent`, `featured`, optional external `url`); the body is the on-site case study. `draft: true` renders in `dev` but is excluded from `build`
 - `src/content/blog/<slug>.md` — posts; the filename is the URL slug. `draft: true` renders in `dev` but is excluded from `build`
 - `src/content.config.ts` — Zod schemas for all three collections (this file is at `src/`, not `src/content/`). A schema mismatch fails `astro check` and the build.
 
-The three seeded blog posts are AI-written first-person drafts — review before publishing.
+The three seeded blog posts are AI-written first-person drafts — review before publishing. The project write-up bodies are stubs pointing at the external Notion write-ups — flesh them out before relying on them.
 
 ## Styling
 
