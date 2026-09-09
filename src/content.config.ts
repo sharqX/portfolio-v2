@@ -19,15 +19,17 @@ const work = defineCollection({
 });
 
 const projects = defineCollection({
-  loader: file("src/content/projects.json"),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/projects" }),
   schema: z.object({
     title: z.string(),
     summary: z.string(),
-    url: z.url(),
+    /* Optional link to a fuller external write-up (currently Notion). */
+    url: z.url().optional(),
     date: z.coerce.date(),
     tags: z.array(z.string()).min(1),
     accent: accent.default("blue"),
     featured: z.boolean().default(false),
+    draft: z.boolean().default(false),
   }),
 });
 

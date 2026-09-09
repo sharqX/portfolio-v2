@@ -45,6 +45,18 @@ const posts = (
     lede="Each of these has a full write-up covering the architecture, what broke, and what I would do differently."
   >
     <ProjectGrid projects={projects} />
+    <p class="more" data-reveal>
+      <a class="btn btn--ghost" href="/projects">
+        All projects
+        <Icon
+          is:inline
+          aria-hidden="true"
+          name="ph:arrow-right-bold"
+          width="16"
+          height="16"
+        />
+      </a>
+    </p>
   </Section>
 
   <Section
@@ -58,6 +70,7 @@ const posts = (
       <a class="btn btn--ghost" href="/blog">
         All posts
         <Icon
+          is:inline
           aria-hidden="true"
           name="ph:arrow-right-bold"
           width="16"

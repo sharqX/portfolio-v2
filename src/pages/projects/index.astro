@@ -5,8 +5,11 @@ import { Icon } from "astro-icon/components";
 import Base from "../../layouts/Base.astro";
 import Tag from "../../components/Tag.astro";
 
-const posts = (
-  await getCollection("blog", ({ data }) => !data.draft || import.meta.env.DEV)
+const projects = (
+  await getCollection(
+    "projects",
+    ({ data }) => !data.draft || import.meta.env.DEV,
+  )
 ).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const slugify = (value: string) =>
@@ -15,37 +18,41 @@ const slugify = (value: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
-const allTags = [...new Set(posts.flatMap((post) => post.data.tags))].sort();
+const allTags = [
+  ...new Set(projects.flatMap((project) => project.data.tags)),
+].sort();
 
-const byYear = posts.reduce<Map<number, typeof posts>>((groups, post) => {
-  const year = post.data.date.getFullYear();
-  const bucket = groups.get(year);
-  if (bucket) bucket.push(post);
-  else groups.set(year, [post]);
-  return groups;
-}, new Map());
+const byYear = projects.reduce<Map<number, typeof projects>>(
+  (groups, project) => {
+    const year = project.data.date.getFullYear();
+    const bucket = groups.get(year);
+    if (bucket) bucket.push(project);
+    else groups.set(year, [project]);
+    return groups;
+  },
+  new Map(),
+);
 
 const years = [...byYear.entries()].sort((a, b) => b[0] - a[0]);
 
 const formatter = new Intl.DateTimeFormat("en-GB", {
-  day: "2-digit",
   month: "short",
+  year: "numeric",
 });
 ---
 
 <Base
-  title="Writing"
-  description="Posts on cloud infrastructure, containers, deployment pipelines and observability."
+  title="Projects"
+  description="Things I've built end to end — infrastructure, containers, deployment pipelines and the write-ups that go with them."
 >
   <section class="section blog">
     <div class="container">
       <header class="blog__head" data-reveal>
-        <p class="eyebrow">Writing</p>
-        <h1 class="section-title">Notes from the pipeline</h1>
+        <p class="eyebrow">Projects</p>
+        <h1 class="section-title">Things I've built and written up</h1>
         <p class="section-lede">
-          Write-ups of things I've deployed, broken and fixed — infrastructure,
-          containers, delivery pipelines and the observability needed to trust
-          any of it. <a href="/rss.xml">Subscribe by RSS</a>.
+          Each of these has a full write-up covering the architecture, what
+          broke, and what I would do differently.
         </p>
       </header>
 
@@ -79,27 +86,30 @@ const formatter = new Intl.DateTimeFormat("en-GB", {
             <section class="year" data-year-group>
               <h2 class="year__label mono">{year}</h2>
               <ul class="year__list">
-                {entries.map((post, i) => (
+                {entries.map((project, i) => (
                   <li
                     class="row"
                     data-post
-                    data-tags={post.data.tags.map(slugify).join(" ")}
+                    data-tags={project.data.tags.map(slugify).join(" ")}
                     data-reveal
                     style={`--index: ${groupIndex + i}`}
                   >
-                    <a class="row__link link-plain" href={`/blog/${post.id}`}>
+                    <a
+                      class="row__link link-plain"
+                      href={`/projects/${project.id}`}
+                    >
                       <time
                         class="mono row__date"
-                        datetime={post.data.date.toISOString()}
+                        datetime={project.data.date.toISOString()}
                       >
-                        {formatter.format(post.data.date)}
+                        {formatter.format(project.data.date)}
                       </time>
                       <span class="row__body">
-                        <span class="row__title">{post.data.title}</span>
-                        <span class="row__summary">{post.data.summary}</span>
+                        <span class="row__title">{project.data.title}</span>
+                        <span class="row__summary">{project.data.summary}</span>
                         <span class="tag-row row__tags">
-                          {post.data.tags.map((tag) => (
-                            <Tag accent={post.data.accent}>{tag}</Tag>
+                          {project.data.tags.map((tag) => (
+                            <Tag accent={project.data.accent}>{tag}</Tag>
                           ))}
                         </span>
                       </span>
@@ -120,9 +130,7 @@ const formatter = new Intl.DateTimeFormat("en-GB", {
         }
       </div>
 
-      <p class="blog__empty" data-empty hidden>
-        Nothing filed under that tag yet.
-      </p>
+      <p class="blog__empty" data-empty hidden>Nothing tagged that yet.</p>
     </div>
   </section>
 </Base>
@@ -165,7 +173,7 @@ const formatter = new Intl.DateTimeFormat("en-GB", {
         status.textContent =
           filter === "all"
             ? ""
-            : `${shown} ${shown === 1 ? "post" : "posts"} tagged.`;
+            : `${shown} ${shown === 1 ? "project" : "projects"} tagged.`;
       }
 
       for (const chip of chips) {

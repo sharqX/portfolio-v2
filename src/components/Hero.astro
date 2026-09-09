@@ -1,8 +1,15 @@
 ---
 import { Icon } from "astro-icon/components";
+import { getCollection } from "astro:content";
 import { site } from "../site.config";
 import work from "../content/work.json";
-import projects from "../content/projects.json";
+
+const projectEntries = (
+  await getCollection(
+    "projects",
+    ({ data }) => !data.draft || import.meta.env.DEV,
+  )
+).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 /**
  * Payload for the interactive terminal in the hero. It is presentation-level
@@ -24,10 +31,10 @@ const terminalData = {
       role: entry.role,
       period: entry.period,
     })),
-  projects: projects.map((project) => ({
-    title: project.title,
-    summary: project.summary,
-    url: project.url,
+  projects: projectEntries.map((project) => ({
+    title: project.data.title,
+    summary: project.data.summary,
+    url: `/projects/${project.id}`,
   })),
   socials: site.socials.map((social) => ({
     label: social.label,
@@ -80,6 +87,7 @@ const terminalData = {
             target="_blank"
           >
             <Icon
+              is:inline
               aria-hidden="true"
               name="ph:file-text-bold"
               width="16"
@@ -90,6 +98,7 @@ const terminalData = {
           <a class="btn btn--link" href="/blog">
             Read the writing
             <Icon
+              is:inline
               aria-hidden="true"
               name="ph:arrow-right-bold"
               width="16"
@@ -111,6 +120,7 @@ const terminalData = {
                   title={social.label}
                 >
                   <Icon
+                    is:inline
                     aria-hidden="true"
                     name={social.icon}
                     width="17"
@@ -128,6 +138,7 @@ const terminalData = {
               title="Email"
             >
               <Icon
+                is:inline
                 aria-hidden="true"
                 name="ph:at-bold"
                 width="17"
@@ -290,7 +301,7 @@ const terminalData = {
       a.href = href;
       a.textContent = label;
       a.className = "terminal__link";
-      if (!href.startsWith("mailto:")) {
+      if (!href.startsWith("mailto:") && !href.startsWith("/")) {
         a.target = "_blank";
         a.rel = "noopener noreferrer";
       }
@@ -399,7 +410,7 @@ const terminalData = {
             wrap(project.summary).forEach((l) =>
               line(l, "terminal__line--dim"),
             );
-            linkLine(project.url.replace(/^https?:\/\//, ""), project.url);
+            linkLine(project.url, project.url);
           });
         },
       },
