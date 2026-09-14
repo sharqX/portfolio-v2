@@ -7,12 +7,13 @@ services:
     image: portfolio-v2:latest
     container_name: my-portfolio-v2
     restart: unless-stopped
-    # No published ports. The nginx container in the `portfolio` compose project
-    # terminates TLS and reverse-proxies to this container over the shared
-    # network (see deploy/proxy-v2.zararsharique.com.conf). The image serves the
-    # built site on :80 from its baked nginx.conf.
-    expose:
-      - "80"
+    # Host port 80 is already bound by another service on this box, so it's
+    # published on 8081 instead. Whatever fronts v2.zararsharique.com (host
+    # nginx, the `portfolio` compose project's proxy, etc.) should reverse-proxy
+    # to 127.0.0.1:8081. The image still serves the built site on :80 internally
+    # from its baked nginx.conf.
+    ports:
+      - "8081:80"
     networks:
       - web
 
