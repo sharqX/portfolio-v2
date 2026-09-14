@@ -3,7 +3,6 @@ import { Icon } from "astro-icon/components";
 import { site } from "../site.config";
 
 const path = Astro.url.pathname;
-const onBlog = path.startsWith("/blog");
 
 const isCurrent = (href: string) =>
   href.startsWith("/") && !href.includes("#") && path.startsWith(href);
@@ -36,13 +35,6 @@ const isCurrent = (href: string) =>
           </a>
         ))
       }
-      <a
-        class="nav__link link-plain"
-        href="/blog"
-        aria-current={onBlog ? "page" : undefined}
-      >
-        Blog
-      </a>
       <button
         class="nav__icon nav__icon--button"
         type="button"
