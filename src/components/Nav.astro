@@ -24,7 +24,11 @@ const isCurrent = (href: string) =>
       {
         site.nav.map((item) => (
           <a
-            class="nav__link link-plain"
+            class:list={[
+              "nav__link",
+              "link-plain",
+              item.always && "nav__link--always",
+            ]}
             href={item.href}
             aria-current={isCurrent(item.href) ? "page" : undefined}
           >
@@ -33,7 +37,7 @@ const isCurrent = (href: string) =>
         ))
       }
       <a
-        class="nav__link nav__link--always link-plain"
+        class="nav__link link-plain"
         href="/blog"
         aria-current={onBlog ? "page" : undefined}
       >
