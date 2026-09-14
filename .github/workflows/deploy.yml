@@ -35,7 +35,7 @@ jobs:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
-      # No registry. The host holds a git checkout at /opt/apps/portfolio-v2,
+      # No registry. The host holds a git checkout at /opt/apps/portfolio_v2,
       # builds the image locally from the Dockerfile, and (re)starts the
       # container. `docker compose up -d --build` also joins it to the existing
       # `portfolio` project's network so portfolio-nginx-1 can route to it.
@@ -47,7 +47,7 @@ jobs:
           key: ${{ secrets.KEY }}
           script: |
             set -e
-            cd /opt/apps/portfolio_v2
+            cd /opt/apps/portfolio-v2
             git fetch origin main
             git reset --hard origin/main
             docker compose up -d --build
