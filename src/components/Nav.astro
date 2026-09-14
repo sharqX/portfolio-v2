@@ -13,7 +13,7 @@ const isCurrent = (href: string) =>
   <div class="nav__inner container">
     <a
       class="nav__brand link-plain"
-      href="/"
+      href="/#top"
       aria-label={`${site.name} — home`}
     >
       <span class="nav__monogram">{site.monogram}</span>
@@ -24,11 +24,7 @@ const isCurrent = (href: string) =>
       {
         site.nav.map((item) => (
           <a
-            class:list={[
-              "nav__link",
-              "link-plain",
-              item.always && "nav__link--always",
-            ]}
+            class="nav__link link-plain"
             href={item.href}
             aria-current={isCurrent(item.href) ? "page" : undefined}
           >

@@ -8,8 +8,6 @@ export interface SocialLink {
 export interface NavItem {
   label: string;
   href: string;
-  /** Keep the link visible in the compact mobile nav (for real pages, not anchors). */
-  always?: boolean;
 }
 
 export const site = {
@@ -70,7 +68,7 @@ export const site = {
 
   nav: [
     { label: "Work", href: "/#work" },
-    { label: "Projects", href: "/projects", always: true },
+    { label: "Projects", href: "/#projects" },
     { label: "Writing", href: "/#writing" },
     { label: "Contact", href: "/#contact" },
   ] satisfies NavItem[],
