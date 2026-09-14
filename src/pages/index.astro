@@ -8,7 +8,6 @@ import Section from "../components/Section.astro";
 import WorkTimeline from "../components/WorkTimeline.astro";
 import ProjectGrid from "../components/ProjectGrid.astro";
 import WritingList from "../components/WritingList.astro";
-import Toolbox from "../components/Toolbox.astro";
 import Contact from "../components/Contact.astro";
 
 const work = (await getCollection("work")).sort(
@@ -51,9 +50,9 @@ const posts = (
         <Icon
           is:inline
           aria-hidden="true"
-          name="ph:arrow-right-bold"
-          width="16"
-          height="16"
+          name="ph:arrow-right"
+          width="19"
+          height="19"
         />
       </a>
     </p>
@@ -72,21 +71,12 @@ const posts = (
         <Icon
           is:inline
           aria-hidden="true"
-          name="ph:arrow-right-bold"
-          width="16"
-          height="16"
+          name="ph:arrow-right"
+          width="19"
+          height="19"
         />
       </a>
     </p>
-  </Section>
-
-  <Section
-    id="toolbox"
-    eyebrow="Toolbox"
-    title="What I reach for"
-    lede="Tools I've used on real deployments rather than only in tutorials."
-  >
-    <Toolbox />
   </Section>
 
   <Section id="contact" eyebrow="Contact" title="Get in touch">

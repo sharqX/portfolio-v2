@@ -89,20 +89,20 @@ const terminalData = {
             <Icon
               is:inline
               aria-hidden="true"
-              name="ph:file-text-bold"
-              width="16"
-              height="16"
+              name="ph:file-text"
+              width="19"
+              height="19"
             />
-            My Resume
+            My résumé
           </a>
           <a class="btn btn--link" href="/blog">
             Read the writing
             <Icon
               is:inline
               aria-hidden="true"
-              name="ph:arrow-right-bold"
-              width="16"
-              height="16"
+              name="ph:arrow-right"
+              width="19"
+              height="19"
             />
           </a>
         </div>
@@ -123,8 +123,8 @@ const terminalData = {
                     is:inline
                     aria-hidden="true"
                     name={social.icon}
-                    width="17"
-                    height="17"
+                    width="20"
+                    height="20"
                   />
                 </a>
               </li>
@@ -140,9 +140,9 @@ const terminalData = {
               <Icon
                 is:inline
                 aria-hidden="true"
-                name="ph:at-bold"
-                width="17"
-                height="17"
+                name="at"
+                width="20"
+                height="20"
               />
             </a>
           </li>
@@ -731,6 +731,13 @@ const terminalData = {
     // Pin an explicit height up front so appended output can't auto-resize
     // the panel before fitHeight() gets to animate the grow.
     fitHeight();
+
+    // Focus the prompt on load so visitors can start typing immediately.
+    // Skipped on touch devices (would pop the keyboard unprompted) and when
+    // the URL has a hash (an anchor link should keep focus at its target).
+    if (!location.hash && window.matchMedia("(pointer: fine)").matches) {
+      input.focus({ preventScroll: true });
+    }
   }
 </script>
 
