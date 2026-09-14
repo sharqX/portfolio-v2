@@ -127,9 +127,11 @@ const analytics = import.meta.env.PROD ? site.analyticsId : null;
     <script>
       import { initReveal } from '../scripts/reveal';
       import { initTheme } from '../scripts/theme';
+      import { initAnchorNav } from '../scripts/anchor-nav';
 
       initTheme();
       initReveal();
+      initAnchorNav();
     </script>
   </body>
 </html>

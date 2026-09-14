@@ -13,7 +13,7 @@ import { site } from "../site.config";
 
     <p class="contact__hint">
       <span>Press</span>
-      <kbd>C</kbd>
+      <kbd data-copy-shortcut>Ctrl+C</kbd>
       <span>to copy the address.</span>
       <button
         class="contact__copy"
@@ -24,9 +24,9 @@ import { site } from "../site.config";
         <Icon
           is:inline
           aria-hidden="true"
-          name="ph:copy-bold"
-          width="14"
-          height="14"
+          name="ph:copy"
+          width="17"
+          height="17"
         />
         <span data-copy-label>Copy</span>
       </button>
@@ -56,8 +56,8 @@ import { site } from "../site.config";
                 is:inline
                 aria-hidden="true"
                 name={social.icon}
-                width="16"
-                height="16"
+                width="19"
+                height="19"
               />
               <span class="contact__row-label">{social.label}</span>
               <span class="contact__row-handle">{social.handle}</span>
@@ -65,9 +65,9 @@ import { site } from "../site.config";
                 is:inline
                 aria-hidden="true"
                 class="contact__row-arrow"
-                name="ph:arrow-up-right-bold"
-                width="14"
-                height="14"
+                name="ph:arrow-up-right"
+                width="17"
+                height="17"
               />
             </a>
           </li>
@@ -83,9 +83,9 @@ import { site } from "../site.config";
           <Icon
             is:inline
             aria-hidden="true"
-            name="ph:file-text-bold"
-            width="16"
-            height="16"
+            name="ph:file-text"
+            width="19"
+            height="19"
           />
           <span class="contact__row-label">Résumé</span>
           <span class="contact__row-handle">PDF</span>
@@ -93,9 +93,9 @@ import { site } from "../site.config";
             is:inline
             aria-hidden="true"
             class="contact__row-arrow"
-            name="ph:arrow-up-right-bold"
-            width="14"
-            height="14"
+            name="ph:arrow-up-right"
+            width="17"
+            height="17"
           />
         </a>
       </li>
@@ -107,6 +107,13 @@ import { site } from "../site.config";
   const button = document.querySelector<HTMLButtonElement>("[data-copy-email]");
   const status = document.querySelector<HTMLElement>("[data-copy-status]");
   const label = document.querySelector<HTMLElement>("[data-copy-label]");
+  const shortcut = document.querySelector<HTMLElement>("[data-copy-shortcut]");
+
+  const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform ?? navigator.userAgent);
+
+  if (shortcut) {
+    shortcut.textContent = isMac ? "⌘+C" : "Ctrl+C";
+  }
 
   if (button && status && label) {
     const email = button.dataset.email ?? "";
@@ -132,7 +139,8 @@ import { site } from "../site.config";
 
     document.addEventListener("keydown", (event) => {
       if (event.key !== "c" && event.key !== "C") return;
-      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      if (event.altKey) return;
+      if (isMac ? !event.metaKey || event.ctrlKey : !event.ctrlKey || event.metaKey) return;
 
       const target = event.target as HTMLElement | null;
       if (

@@ -3,7 +3,6 @@ import { Icon } from "astro-icon/components";
 import { site } from "../site.config";
 
 const path = Astro.url.pathname;
-const onBlog = path.startsWith("/blog");
 
 const isCurrent = (href: string) =>
   href.startsWith("/") && !href.includes("#") && path.startsWith(href);
@@ -13,7 +12,7 @@ const isCurrent = (href: string) =>
   <div class="nav__inner container">
     <a
       class="nav__brand link-plain"
-      href="/"
+      href="/#top"
       aria-label={`${site.name} — home`}
     >
       <span class="nav__monogram">{site.monogram}</span>
@@ -36,13 +35,6 @@ const isCurrent = (href: string) =>
           </a>
         ))
       }
-      <a
-        class="nav__link nav__link--always link-plain"
-        href="/blog"
-        aria-current={onBlog ? "page" : undefined}
-      >
-        Blog
-      </a>
       <button
         class="nav__icon nav__icon--button"
         type="button"
@@ -55,17 +47,17 @@ const isCurrent = (href: string) =>
           is:inline
           aria-hidden="true"
           class="theme-icon theme-icon--moon"
-          name="ph:moon-bold"
-          width="16"
-          height="16"
+          name="ph:moon"
+          width="19"
+          height="19"
         />
         <Icon
           is:inline
           aria-hidden="true"
           class="theme-icon theme-icon--sun"
-          name="ph:sun-bold"
-          width="16"
-          height="16"
+          name="ph:sun"
+          width="19"
+          height="19"
         />
       </button>
 
@@ -80,9 +72,9 @@ const isCurrent = (href: string) =>
         <Icon
           is:inline
           aria-hidden="true"
-          name="ph:download-simple-bold"
-          width="16"
-          height="16"
+          name="ph:download-simple"
+          width="19"
+          height="19"
         />
       </a>
     </nav>

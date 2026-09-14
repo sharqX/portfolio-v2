@@ -8,7 +8,7 @@ export interface SocialLink {
 export interface NavItem {
   label: string;
   href: string;
-  /** Keep the link visible in the compact mobile nav (for real pages, not anchors). */
+  /** Keep the link visible in the compact mobile nav. */
   always?: boolean;
 }
 
@@ -45,32 +45,32 @@ export const site = {
     {
       label: "GitHub",
       href: "https://github.com/sharqX",
-      icon: "ph:github-logo-bold",
+      icon: "github",
       handle: "sharqX",
     },
     {
       label: "LinkedIn",
       href: "https://linkedin.com/in/shariquerahman",
-      icon: "ph:linkedin-logo-bold",
+      icon: "linkedin-in",
       handle: "shariquerahman",
     },
     {
       label: "X",
       href: "https://x.com/zarar_sharique",
-      icon: "ph:x-logo-bold",
+      icon: "x-twitter",
       handle: "zarar_sharique",
     },
     {
       label: "Discord",
       href: "https://discord.gg/PFGd5NsjbE",
-      icon: "ph:discord-logo-bold",
+      icon: "discord",
       handle: "Join the server",
     },
   ] satisfies SocialLink[],
 
   nav: [
     { label: "Work", href: "/#work" },
-    { label: "Projects", href: "/projects", always: true },
+    { label: "Projects", href: "/#projects", always: true },
     { label: "Writing", href: "/#writing" },
     { label: "Contact", href: "/#contact" },
   ] satisfies NavItem[],

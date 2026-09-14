@@ -24,6 +24,14 @@ Page content lives in data files, not `.astro` templates:
 
 The three seeded blog posts are AI-written first-person drafts — review before publishing. The project write-up bodies are stubs pointing at the external Notion write-ups — flesh them out before relying on them.
 
+## Architecture
+
+- Static Astro site, no client framework or islands — `src/scripts/*.ts` are the only client-side JS, each imported and invoked from a `<script>` block in `src/layouts/Base.astro`.
+- Three layouts wrap all pages: `Base.astro` (head/meta/OG tags, font imports, theme-init script, `Nav`/`Footer`/`AmbientBackdrop`) is used directly by `src/pages/index.astro` and `blog/index.astro`/`projects/index.astro`; `Post.astro` and `Project.astro` wrap `Base` for the `/blog/<slug>` and `/projects/<slug>` detail routes respectively.
+- Theming (`src/scripts/theme.ts`): an inline script in `Base.astro`'s `<head>` sets `data-theme` on `<html>` from `localStorage` before first paint (avoids a flash); `theme.ts` then wires the toggle button and a `prefers-color-scheme` listener that only applies while no explicit choice is stored.
+- Scroll reveals (`src/scripts/reveal.ts`): a single `IntersectionObserver` watches every `[data-reveal]` element and adds `.is-visible` once, then unobserves; no-ops under `prefers-reduced-motion`.
+- `src/pages/rss.xml.ts` and the sitemap integration derive their entries from the `blog`/`projects` content collections directly — new posts/projects need no separate registration.
+
 ## Styling
 
 - All theme values live in `src/styles/tokens.css`. Never hardcode a hex value in a component.
@@ -34,4 +42,4 @@ The three seeded blog posts are AI-written first-person drafts — review before
 ## Git & deploy
 
 - Work on a feature branch and open a PR to `main`. PRs run build + check only.
-- **Push to `main` is a live production deploy to v2.zararsharique.com** (GitHub Actions SSHes to the host, which does `git reset --hard origin/main && docker compose up -d --build` in `/opt/apps/portfolio-v2` — the image is built on the host, no registry). It runs alongside the current site at `zararsharique.com`, which this pipeline never touches. Never push to `main` unprompted.
+- **Push to `main` is a live production deploy to v2.zararsharique.com** (GitHub Actions SSHes to the host, which does `git reset --hard origin/main && docker compose up -d --build` in `/opt/apps/portfolio_v2` — the image is built on the host, no registry). It runs alongside the current site at `zararsharique.com`, which this pipeline never touches. Never push to `main` unprompted.
