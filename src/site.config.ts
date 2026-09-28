@@ -71,7 +71,7 @@ export const site = {
   nav: [
     { label: "Work", href: "/#work" },
     { label: "Projects", href: "/#projects", always: true },
-    { label: "Writing", href: "/#writing" },
+    { label: "Blog", href: "/#blog" },
     { label: "Contact", href: "/#contact" },
   ] satisfies NavItem[],
 };
