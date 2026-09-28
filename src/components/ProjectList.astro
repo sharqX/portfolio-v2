@@ -4,10 +4,10 @@ import type { CollectionEntry } from "astro:content";
 import Tag from "./Tag.astro";
 
 /**
- * Each project sets its own `accent` in its frontmatter as a stable identity
- * colour for its tags — one distinct pastel per project, never repeated. Keep
- * it that way: if a fifth project can't take an unused pastel, it goes
- * neutral rather than doubling up a hue.
+ * Each project's `accent` frontmatter colours its tags; give each project a
+ * distinct pastel. There are only four, and omitting `accent` falls back to
+ * the schema default (blue) rather than a neutral tag, so a fifth project
+ * will share a hue with another.
  */
 interface Props {
   projects: CollectionEntry<"projects">[];
@@ -32,15 +32,15 @@ const formatter = new Intl.DateTimeFormat("en-GB", {
           >
             {formatter.format(project.data.date)}
           </time>
-          <span class="projects__body">
-            <span class="projects__title">{project.data.title}</span>
+          <div class="projects__body">
+            <h3 class="projects__title">{project.data.title}</h3>
             <span class="projects__summary">{project.data.summary}</span>
             <span class="tag-row projects__tags">
               {project.data.tags.map((tag) => (
                 <Tag accent={project.data.accent}>{tag}</Tag>
               ))}
             </span>
-          </span>
+          </div>
           <Icon
             is:inline
             aria-hidden="true"

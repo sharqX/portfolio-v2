@@ -18,12 +18,15 @@ interface AnchorState {
   anchor: string;
 }
 
+/* Section ids that have been renamed, old → new, so old links still land. */
+const renamedIds = new Map([["writing", "blog"]]);
+
 function scrollToId(id: string, behavior: ScrollBehavior): boolean {
   if (id === "") {
     window.scrollTo({ top: 0, behavior });
     return true;
   }
-  const el = document.getElementById(id);
+  const el = document.getElementById(renamedIds.get(id) ?? id);
   if (!el) return false;
   el.scrollIntoView({ behavior, block: "start" });
   return true;
