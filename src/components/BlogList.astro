@@ -15,25 +15,25 @@ const formatter = new Intl.DateTimeFormat("en-GB", {
 });
 ---
 
-<ul class="writing">
+<ul class="blog-list">
   {
     posts.map((post, i) => (
-      <li class="writing__row" data-reveal style={`--index: ${i}`}>
-        <a class="writing__link link-plain" href={`/blog/${post.id}`}>
+      <li class="blog-list__row" data-reveal style={`--index: ${i}`}>
+        <a class="blog-list__link link-plain" href={`/blog/${post.id}`}>
           <time
-            class="mono writing__date"
+            class="mono blog-list__date"
             datetime={post.data.date.toISOString()}
           >
             {formatter.format(post.data.date)}
           </time>
-          <span class="writing__body">
-            <span class="writing__title">{post.data.title}</span>
-            <span class="writing__summary">{post.data.summary}</span>
+          <span class="blog-list__body">
+            <span class="blog-list__title">{post.data.title}</span>
+            <span class="blog-list__summary">{post.data.summary}</span>
           </span>
           <Icon
             is:inline
             aria-hidden="true"
-            class="writing__arrow"
+            class="blog-list__arrow"
             name="ph:arrow-right"
             width="19"
             height="19"
@@ -45,18 +45,18 @@ const formatter = new Intl.DateTimeFormat("en-GB", {
 </ul>
 
 <style>
-  .writing {
+  .blog-list {
     list-style: none;
     padding: 0;
     margin: 0;
     border-top: 1px solid var(--border);
   }
 
-  .writing__row {
+  .blog-list__row {
     border-bottom: 1px solid var(--border);
   }
 
-  .writing__link {
+  .blog-list__link {
     display: grid;
     grid-template-columns: 8.5rem minmax(0, 1fr) auto;
     align-items: baseline;
@@ -65,35 +65,35 @@ const formatter = new Intl.DateTimeFormat("en-GB", {
     transition: background-color var(--dur-hover) ease;
   }
 
-  .writing__link:hover {
+  .blog-list__link:hover {
     background: color-mix(in srgb, var(--surface-key) 60%, transparent);
   }
 
-  .writing__date {
+  .blog-list__date {
     font-size: var(--text-micro);
     white-space: nowrap;
   }
 
-  .writing__body {
+  .blog-list__body {
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
   }
 
-  .writing__title {
+  .blog-list__title {
     font-family: var(--font-serif);
     font-size: 1.375rem;
     letter-spacing: var(--tracking-tight);
     line-height: var(--leading-snug);
   }
 
-  .writing__summary {
+  .blog-list__summary {
     color: var(--ink-muted);
     font-size: var(--text-small);
     max-width: 62ch;
   }
 
-  .writing__arrow {
+  .blog-list__arrow {
     align-self: center;
     color: var(--border);
     transition:
@@ -101,19 +101,19 @@ const formatter = new Intl.DateTimeFormat("en-GB", {
       color var(--dur-hover) ease;
   }
 
-  .writing__link:hover .writing__arrow {
+  .blog-list__link:hover .blog-list__arrow {
     transform: translateX(3px);
     color: var(--ember-500);
   }
 
   @media (max-width: 720px) {
-    .writing__link {
+    .blog-list__link {
       grid-template-columns: minmax(0, 1fr) auto;
       gap: 0.5rem 1rem;
       padding-inline: 0.25rem;
     }
 
-    .writing__date {
+    .blog-list__date {
       grid-column: 1 / -1;
     }
   }

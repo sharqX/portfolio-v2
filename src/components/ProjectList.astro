@@ -1,0 +1,135 @@
+---
+import { Icon } from "astro-icon/components";
+import type { CollectionEntry } from "astro:content";
+import Tag from "./Tag.astro";
+
+/**
+ * Each project sets its own `accent` in its frontmatter as a stable identity
+ * colour for its tags — one distinct pastel per project, never repeated. Keep
+ * it that way: if a fifth project can't take an unused pastel, it goes
+ * neutral rather than doubling up a hue.
+ */
+interface Props {
+  projects: CollectionEntry<"projects">[];
+}
+
+const { projects } = Astro.props;
+
+const formatter = new Intl.DateTimeFormat("en-GB", {
+  month: "short",
+  year: "numeric",
+});
+---
+
+<ul class="projects">
+  {
+    projects.map((project, i) => (
+      <li class="projects__row" data-reveal style={`--index: ${i}`}>
+        <a class="projects__link link-plain" href={`/projects/${project.id}`}>
+          <time
+            class="mono projects__date"
+            datetime={project.data.date.toISOString()}
+          >
+            {formatter.format(project.data.date)}
+          </time>
+          <span class="projects__body">
+            <span class="projects__title">{project.data.title}</span>
+            <span class="projects__summary">{project.data.summary}</span>
+            <span class="tag-row projects__tags">
+              {project.data.tags.map((tag) => (
+                <Tag accent={project.data.accent}>{tag}</Tag>
+              ))}
+            </span>
+          </span>
+          <Icon
+            is:inline
+            aria-hidden="true"
+            class="projects__arrow"
+            name="ph:arrow-right"
+            width="19"
+            height="19"
+          />
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .projects {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .projects__row {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .projects__link {
+    display: grid;
+    grid-template-columns: 8.5rem minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 1.5rem;
+    padding-block: 1.5rem;
+    transition: background-color var(--dur-hover) ease;
+  }
+
+  .projects__link:hover {
+    background: color-mix(in srgb, var(--surface-key) 60%, transparent);
+  }
+
+  .projects__date {
+    font-size: var(--text-micro);
+    white-space: nowrap;
+  }
+
+  .projects__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .projects__title {
+    font-family: var(--font-serif);
+    font-size: 1.375rem;
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-snug);
+  }
+
+  .projects__summary {
+    color: var(--ink-muted);
+    font-size: var(--text-small);
+    max-width: 62ch;
+  }
+
+  .projects__tags {
+    margin-block-start: 0.25rem;
+  }
+
+  .projects__arrow {
+    align-self: center;
+    color: var(--border);
+    transition:
+      transform var(--dur-hover) var(--ease-out-expo),
+      color var(--dur-hover) ease;
+  }
+
+  .projects__link:hover .projects__arrow {
+    transform: translateX(3px);
+    color: var(--ember-500);
+  }
+
+  @media (max-width: 720px) {
+    .projects__link {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.5rem 1rem;
+      padding-inline: 0.25rem;
+    }
+
+    .projects__date {
+      grid-column: 1 / -1;
+    }
+  }
+</style>
